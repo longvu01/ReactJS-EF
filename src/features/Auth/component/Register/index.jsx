@@ -20,14 +20,19 @@ function Register({ closeDialog }) {
       // Dispatch action + unwrap result
       await dispatch(register(values)).unwrap();
 
-      // Close Dialog
       if (closeDialog) closeDialog();
 
-      // Show notistack success
-      enqueueSnackbar('Register successfully', { variant: 'success' });
+      // Show notistack
+      enqueueSnackbar('Register successfully', {
+        variant: 'success',
+        autoHideDuration: 3000,
+      });
     } catch (error) {
-      // Show notistack error
-      enqueueSnackbar(error.message, { variant: 'error' });
+      // Show notistack
+      enqueueSnackbar(error.message, {
+        variant: 'error',
+        autoHideDuration: 3000,
+      });
     }
   };
 

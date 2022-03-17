@@ -9,8 +9,8 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <Provider store={store}>
-    <React.StrictMode>
+  <React.StrictMode>
+    <Provider store={store}>
       <BrowserRouter>
         <SnackbarProvider
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -18,8 +18,8 @@ ReactDOM.render(
           <App />
         </SnackbarProvider>
       </BrowserRouter>
-    </React.StrictMode>
-  </Provider>,
+    </Provider>
+  </React.StrictMode>,
   document.getElementById('root')
 );
 

@@ -1,3 +1,8 @@
+:root {
+  --primary-color: #1976d2;
+  --secondary-color: #4695df;
+}
+
 html {
   background-color: rgb(244, 244, 244);
 }
@@ -19,4 +24,13 @@ code {
 .d-flex {
   display: flex;
   justify-content: space-between;
+}
+
+.MuiTooltip-arrow {
+  color: var(--secondary-color) !important;
+}
+
+.MuiTooltip-tooltip {
+  background-color: var(--secondary-color) !important;
+  padding: 12px 24px 8px !important;
 }

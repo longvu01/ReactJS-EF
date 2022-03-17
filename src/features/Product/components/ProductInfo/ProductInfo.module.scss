@@ -1,0 +1,28 @@
+.root {
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ccc;
+}
+
+.description {
+  margin: 16px 0;
+}
+
+.salePrice {
+  margin-right: 24px;
+  font-size: 1.6em;
+  font-weight: bold;
+}
+
+.originalPrice {
+  margin-right: 16px;
+  text-decoration: line-through;
+}
+
+.promotionPercent {
+}
+
+.priceBox {
+  padding: 16px;
+  background-color: rgb(224, 224, 224);
+  margin: 8px 0;
+}

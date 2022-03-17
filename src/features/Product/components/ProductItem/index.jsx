@@ -1,23 +1,35 @@
 import { Box, Typography } from '@mui/material';
 import { STATIC_HOST } from 'constants';
 import { THUMBNAIL_PLACEHOLDER } from 'constants/index';
-import { formatCurrency } from 'helpers';
+import { formatCurrency, getPlaceholderThumbnailUrl } from 'utils';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import styles from './ProductItem.module.scss';
 
 ProductItem.propTypes = {
   product: PropTypes.object,
 };
 
 function ProductItem({ product }) {
+  const navigate = useNavigate();
+
   const thumbnailUrl = product.thumbnail
     ? `${STATIC_HOST}${product.thumbnail.url}`
-    : THUMBNAIL_PLACEHOLDER;
+    : getPlaceholderThumbnailUrl(product.category?.id);
+
+  const handleClick = () => {
+    navigate(`/products/${product.id}`);
+  };
 
   return (
-    <Box padding={1}>
-      <Box padding={1} minHeight="215px">
-        <img src={thumbnailUrl} alt={product.name} width="100%" />
+    <Box padding={1} onClick={handleClick}>
+      <Box padding={1} className={styles.thumbnailContainer}>
+        <img
+          src={thumbnailUrl}
+          alt={product.name}
+          className={styles.thumbnail}
+        />
       </Box>
 
       <Typography variant="body2">{product.name}</Typography>

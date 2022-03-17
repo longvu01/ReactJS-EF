@@ -1,0 +1,13 @@
+.root {
+}
+
+.box {
+  display: flex;
+  align-items: start;
+  flex-flow: row nowrap;
+  max-width: 200px;
+}
+
+.qtyButton {
+  margin-top: 16px !important;
+}

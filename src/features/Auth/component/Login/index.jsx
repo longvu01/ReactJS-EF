@@ -18,7 +18,10 @@ function Login({ closeDialog }) {
       // Close Dialog
       if (closeDialog) closeDialog();
     } catch (error) {
-      enqueueSnackbar(error.message, { variant: 'error' });
+      enqueueSnackbar(error.message, {
+        variant: 'error',
+        autoHideDuration: 3000,
+      });
     }
   };
 

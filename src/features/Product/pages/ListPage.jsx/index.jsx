@@ -8,7 +8,7 @@ import ProductSort from 'features/Product/components/ProductSort';
 import PaginationSkeleton from 'features/Product/components/skeletonLoading/PaginationSkeleton';
 import ProductSkeletonList from 'features/Product/components/skeletonLoading/ProductSkeletonList';
 import queryString from 'query-string';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import styles from './ListPage.module.scss';
 
@@ -60,7 +60,9 @@ function ListPage(props) {
   // }, [filters]);
 
   useEffect(() => {
-    (async () => {
+    let mounted = true;
+
+    const fetchData = async () => {
       try {
         const { data, pagination } = await productApi.getAll(queryParams);
         setProductList(data);
@@ -70,7 +72,12 @@ function ListPage(props) {
       }
 
       setLoading(false);
-    })();
+    };
+    if (mounted) fetchData();
+
+    return () => {
+      mounted = false;
+    };
   }, [queryParams]);
 
   const handlePageChange = (e, page) => {

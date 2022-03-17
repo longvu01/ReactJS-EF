@@ -1,0 +1,18 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: row nowrap;
+
+  padding: 0;
+  list-style-type: none;
+
+  & > li {
+    padding: 16px 32px;
+  }
+
+  & .link {
+    color: #ccc;
+    text-decoration: none;
+  }
+}

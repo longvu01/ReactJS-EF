@@ -1,10 +1,8 @@
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { FormHelperText, OutlinedInput, TextField } from '@mui/material';
-import FormControl from '@mui/material/FormControl';
+import { TextField } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
-import InputLabel from '@mui/material/InputLabel';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Controller } from 'react-hook-form';
@@ -26,50 +24,46 @@ function PasswordField(props) {
   };
 
   return (
-    <div>
-      <Controller
-        name={name}
-        control={form.control}
-        render={({
-          field: { onChange, onBlur, value, name },
-          fieldState: { invalid, error },
-        }) => (
-          <>
-            <TextField
-              margin="normal"
-              variant="outlined"
-              fullWidth
-              //
-              label={label}
-              disabled={disabled}
-              //
-              type={showPassword ? 'text' : 'password'}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={toggleShowPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              //
-              onChange={onChange}
-              onBlur={onBlur}
-              name={name}
-              value={value}
-              //
-              error={invalid}
-              helperText={error?.message}
-            />
-          </>
-        )}
-      />
-    </div>
+    <Controller
+      name={name}
+      control={form.control}
+      render={({
+        field: { onChange, onBlur, value, name },
+        fieldState: { invalid, error },
+      }) => (
+        <TextField
+          margin="normal"
+          variant="outlined"
+          fullWidth
+          //
+          label={label}
+          disabled={disabled}
+          //
+          type={showPassword ? 'text' : 'password'}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={toggleShowPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          //
+          onChange={onChange}
+          onBlur={onBlur}
+          name={name}
+          value={value}
+          //
+          error={invalid}
+          helperText={error?.message}
+        />
+      )}
+    />
   );
 }
 

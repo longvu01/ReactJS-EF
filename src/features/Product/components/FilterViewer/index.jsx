@@ -1,8 +1,8 @@
 import { Chip } from '@mui/material';
 import { Box } from '@mui/system';
-import { formatCurrency } from 'helpers';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
+import { formatCurrency } from 'utils';
 import styles from './FilterViewer.module.scss';
 
 FilterViewer.propTypes = {

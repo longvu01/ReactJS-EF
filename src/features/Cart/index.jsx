@@ -1,10 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { cartTotalSelector } from './selectors';
 import { formatCurrency } from 'utils';
-
-CartFeature.propTypes = {};
+import { cartTotalSelector } from './selectors';
 
 function CartFeature(props) {
   const cartTotal = useSelector(cartTotalSelector);

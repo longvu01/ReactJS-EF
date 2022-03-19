@@ -1,7 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styles from './ProductSkeletonList.module.scss';
 import { Box, Grid, Skeleton } from '@mui/material';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 ProductSkeletonList.propTypes = {
   length: PropTypes.number,

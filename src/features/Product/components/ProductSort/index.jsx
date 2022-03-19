@@ -1,6 +1,6 @@
-import React from 'react';
+import { Tab, Tabs } from '@mui/material';
 import PropTypes from 'prop-types';
-import { Box, Tab, Tabs } from '@mui/material';
+import React from 'react';
 
 ProductSort.propTypes = {
   currentSort: PropTypes.string.isRequired,

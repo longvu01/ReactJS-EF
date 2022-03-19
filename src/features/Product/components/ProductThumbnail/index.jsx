@@ -1,11 +1,11 @@
 import { Box } from '@mui/material';
 import { Carousel } from '@trendyol-js/react-carousel';
-import { STATIC_HOST, THUMBNAIL_PLACEHOLDER } from 'constants';
+import { STATIC_HOST } from 'constants';
 import PropTypes from 'prop-types';
 import React from 'react';
-import styles from './ProductThumbnail.module.scss';
 import ReactImageMagnify from 'react-image-magnify';
 import { getPlaceholderThumbnailUrl } from 'utils';
+import styles from './ProductThumbnail.module.scss';
 
 ProductThumbnail.propTypes = {
   product: PropTypes.object,

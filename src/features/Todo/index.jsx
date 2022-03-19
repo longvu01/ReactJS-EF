@@ -1,20 +1,12 @@
 import NotFound from 'components/Common/NotFound';
 import React from 'react';
-import {
-  Link,
-  Outlet,
-  Route,
-  Routes,
-  useLocation,
-  useRoutes,
-} from 'react-router-dom';
+import { Link, Outlet, Route, Routes } from 'react-router-dom';
 import DetailPage from './pages/DetailPage';
 import ListPage from './pages/ListPage';
 
 TodoFeature.propTypes = {};
 
 function TodoFeature(props) {
-  console.log(props);
   const { path } = props;
   return (
     <div>

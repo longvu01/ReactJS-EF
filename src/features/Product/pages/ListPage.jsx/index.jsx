@@ -1,10 +1,12 @@
 import { Box, Container, Grid, Pagination, Paper } from '@mui/material';
+import categoryApi from 'api/categoryApi';
 import productApi from 'api/productApi';
 import classnames from 'classnames';
 import FilterViewer from 'features/Product/components/FilterViewer';
 import ProductFilters from 'features/Product/components/ProductFilters';
 import ProductList from 'features/Product/components/ProductList';
 import ProductSort from 'features/Product/components/ProductSort';
+import FilterSkeletonList from 'features/Product/components/skeletonLoading/FilterSkeletonList';
 import PaginationSkeleton from 'features/Product/components/skeletonLoading/PaginationSkeleton';
 import ProductSkeletonList from 'features/Product/components/skeletonLoading/ProductSkeletonList';
 import queryString from 'query-string';
@@ -26,11 +28,21 @@ function ListPage(props) {
     total: 10,
   };
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const mounted = useRef();
+
+  const [categoryActive, setCategoryActive] = useState('');
+
+  const [loadingList, setLoadingList] = useState(true);
+  const [loadingCate, setLoadingCate] = useState(true);
+
+  const [productList, setProductList] = useState([]);
+  const [categoryList, setCategoryList] = useState([]);
+  const [pagination, setPagination] = useState(initPagination);
+
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const queryParams = useMemo(() => {
     const params = queryString.parse(location.search);
-
     return {
       ...params,
       _page: +params._page || initFilters._page,
@@ -41,28 +53,13 @@ function ListPage(props) {
     };
   }, [location.search]);
 
-  const [productList, setProductList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState(initPagination);
-  // const [filters, setFilters] = useState(() => ({
-  //   ...queryParams,
-  //   _page: +queryParams._page || initFilters._page,
-  //   _limit: +queryParams._limit || initFilters._limit,
-  //   _sort: queryParams._sort || initFilters._sort,
-  // }));
-
   const countPagination = Math.ceil(pagination.total / pagination.limit);
   const currentPage = pagination.page;
 
-  // Sync filters to URL
-  // useEffect(() => {
-  //   setSearchParams(queryString.stringify(filters));
-  // }, [filters]);
-
   useEffect(() => {
-    let mounted = true;
-
-    const fetchData = async () => {
+    mounted.current = true;
+    // Fetch data list + pagination
+    const fetchDataProductsAndPagination = async () => {
       try {
         const { data, pagination } = await productApi.getAll(queryParams);
         setProductList(data);
@@ -70,22 +67,43 @@ function ListPage(props) {
       } catch (error) {
         console.log('Failed to fetch product list: ', error);
       }
-
-      setLoading(false);
+      //
+      setLoadingList(false);
     };
-    if (mounted) fetchData();
+
+    // Fetch data category
+    const fetchDataCategories = async () => {
+      try {
+        const list = await categoryApi.getAll();
+        const listCategoryMap = list.map(({ id, name }) => ({ id, name }));
+        setCategoryList(listCategoryMap);
+
+        const categoryActiveId = queryParams['category.id'];
+        if (categoryActiveId) {
+          const categoryActive = listCategoryMap.find(
+            (item) => item.id === +categoryActiveId
+          );
+          setCategoryActive(categoryActive.name);
+        }
+      } catch (error) {
+        console.log('Failed to fetch category list: ', error);
+      }
+      //
+      setLoadingCate(false);
+    };
+
+    if (mounted.current) {
+      fetchDataProductsAndPagination();
+      fetchDataCategories();
+    }
 
     return () => {
-      mounted = false;
+      mounted.current = false;
     };
   }, [queryParams]);
 
+  // Handlers
   const handlePageChange = (e, page) => {
-    // setFilters((prevFilters) => ({
-    //   ...prevFilters,
-    //   _page: page,
-    // }));
-
     const filters = {
       ...queryParams,
       _page: page,
@@ -94,27 +112,45 @@ function ListPage(props) {
   };
 
   const handleSortChange = (newSortValue) => {
-    // setFilters((prevFilters) => ({
-    //   ...prevFilters,
-    //   _sort: newSortValue,
-    // }));
-
     const filters = {
       ...queryParams,
       _sort: newSortValue,
+      _page: 1,
     };
     setSearchParams(queryString.stringify(filters));
   };
 
-  const handleFiltersChange = (newFilters) => {
-    // setFilters((prevFilters) => ({
-    //   ...prevFilters,
-    //   ...newFilters,
-    // }));
+  const handleFiltersChange = (newFilters, isResetPriceRange = true) => {
     const filters = {
       ...queryParams,
       ...newFilters,
+      _page: 1,
     };
+
+    const categoryActiveId = queryParams['category.id'];
+    if (categoryActiveId) {
+      const categoryActive = categoryList.find(
+        (item) => item.id === +categoryActiveId
+      );
+      setCategoryActive(categoryActive.name);
+    }
+
+    if (isResetPriceRange) {
+      delete filters.salePrice_gte;
+      delete filters.salePrice_lte;
+    }
+
+    setSearchParams(queryString.stringify(filters));
+  };
+
+  const handleViewerChange = (newFilters) => {
+    const filters = {
+      ...queryParams,
+      ...newFilters,
+      _page: 1,
+    };
+
+    if (!filters['category.id']) setCategoryActive('');
 
     setSearchParams(queryString.stringify(filters));
   };
@@ -127,16 +163,23 @@ function ListPage(props) {
     <Box>
       <Container>
         <Grid container spacing={1}>
+          {/* Left side */}
           <Grid item className={classnames(styles.left)}>
             <Paper elevation={0}>
-              <ProductFilters
-                filters={queryParams}
-                onChange={handleFiltersChange}
-                onReset={handleResetFilters}
-              />
+              {loadingCate ? (
+                <FilterSkeletonList length={20} />
+              ) : (
+                <ProductFilters
+                  filters={queryParams}
+                  categoryList={categoryList}
+                  onChange={handleFiltersChange}
+                  onReset={handleResetFilters}
+                />
+              )}
             </Paper>
           </Grid>
 
+          {/* Right side */}
           <Grid item className={styles.right}>
             <Paper elevation={0}>
               <ProductSort
@@ -145,10 +188,11 @@ function ListPage(props) {
               />
               <FilterViewer
                 filters={queryParams}
-                onChange={handleFiltersChange}
+                onChange={handleViewerChange}
+                categoryActive={categoryActive}
               />
               {/*  */}
-              {loading ? (
+              {loadingList ? (
                 <>
                   <ProductSkeletonList length={12} />
                   <PaginationSkeleton length={6} />
@@ -165,6 +209,8 @@ function ListPage(props) {
                       color="primary"
                       page={currentPage}
                       onChange={handlePageChange}
+                      showFirstButton
+                      showLastButton
                     />
                   </Box>
                 </>

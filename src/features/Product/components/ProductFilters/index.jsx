@@ -1,33 +1,30 @@
 import { Box } from '@mui/material';
 import PropTypes from 'prop-types';
-import React, { useRef } from 'react';
+import React from 'react';
 import FilterByCategory from '../Filters/FilterByCategory';
 import FilterByPrice from '../Filters/FilterByPrice';
 import FilterByService from '../Filters/FilterByService';
 
 ProductFilters.propTypes = {
   filters: PropTypes.object.isRequired,
+  categoryList: PropTypes.array.isRequired,
   onChange: PropTypes.func,
   onReset: PropTypes.func,
 };
 
-function ProductFilters({ filters, onChange, onReset }) {
-  const activeCategoryId = useRef(null);
-
-  const handleCategoryChange = (newCategoryId) => {
+function ProductFilters({ filters, categoryList, onChange, onReset }) {
+  const handleCategoryChange = (categoryId) => {
     if (!onChange) return;
 
-    activeCategoryId.current = newCategoryId;
     const newFilters = {
-      'category.id': newCategoryId,
+      'category.id': categoryId,
     };
     onChange(newFilters);
   };
 
-  const handlePriceChange = (values, isReset = false) => {
-    if (onChange) onChange(values);
+  const handleFiltersChange = (values, isReset = false) => {
+    if (onChange) onChange(values, false);
     if (isReset) {
-      activeCategoryId.current = null;
       onReset();
     }
   };
@@ -35,11 +32,18 @@ function ProductFilters({ filters, onChange, onReset }) {
   return (
     <Box>
       <FilterByCategory
+        categoryList={categoryList}
         onChange={handleCategoryChange}
-        activeCategoryId={activeCategoryId.current}
+        activeCategoryId={filters['category.id']}
       />
-      <FilterByPrice onChange={handlePriceChange} />
-      <FilterByService filters={filters} onChange={handlePriceChange} />
+      <FilterByPrice
+        filters={{
+          salePrice_gte: +filters.salePrice_gte,
+          salePrice_lte: +filters.salePrice_lte,
+        }}
+        onChange={handleFiltersChange}
+      />
+      <FilterByService filters={filters} onChange={handleFiltersChange} />
     </Box>
   );
 }

@@ -5,7 +5,7 @@ import CartFeature from 'features/Cart';
 import Counter from 'features/Counter';
 import ProductFeature from 'features/Product';
 import React from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import './App.scss';
 import Header from './components/Common/Header';
 import TodoFeature from './features/Todo/';

@@ -1,9 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { Box, Link } from '@mui/material';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styles from './ProductMenu.module.scss';
-import classNames from 'classnames';
 
 ProductMenu.propTypes = {};
 

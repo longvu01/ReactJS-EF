@@ -1,13 +1,6 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material';
 import propTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './FilterByService.module.scss';
 
 FilterByService.propTypes = {
@@ -35,7 +28,6 @@ function FilterByService({ filters, onChange }) {
     if (!onChange) return;
 
     const { name, checked } = e.target;
-
     onChange({ [name]: checked });
   };
 

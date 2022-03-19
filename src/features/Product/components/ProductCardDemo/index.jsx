@@ -8,12 +8,11 @@ import CardMedia from '@mui/material/CardMedia';
 import IconButton from '@mui/material/IconButton';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import * as React from 'react';
-import propTypes from 'prop-types';
 import { STATIC_HOST } from 'constants';
-import { THUMBNAIL_PLACEHOLDER } from 'constants';
-import styles from './ProductCardDemo.module.scss';
+import propTypes from 'prop-types';
+import * as React from 'react';
 import { getPlaceholderThumbnailUrl } from 'utils';
+import styles from './ProductCardDemo.module.scss';
 
 ProductCardDemo.propTypes = {
   product: propTypes.object,

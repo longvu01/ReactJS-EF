@@ -1,0 +1,27 @@
+.root {
+}
+
+.box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: row nowrap;
+  max-width: 200px;
+}
+
+.qtyButton {
+  margin-top: 16px !important;
+  font-size: 28px !important;
+  color: #333 !important;
+  background-color: #fff !important;
+  border: 1px solid #999;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.textField {
+  margin-top: 23.5px !important;
+  & input {
+    padding: 4px 12px !important;
+  }
+}

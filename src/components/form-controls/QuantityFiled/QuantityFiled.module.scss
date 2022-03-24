@@ -3,7 +3,7 @@
 
 .box {
   display: flex;
-  align-items: start;
+  align-items: flex-start;
   flex-flow: row nowrap;
   max-width: 200px;
 }

@@ -35,7 +35,7 @@ function LoginForm({ onSubmit }) {
 
   const { isSubmitting } = form.formState;
 
-  const handleTodoSubmit = async (values) => {
+  const handleLoginSubmit = async (values) => {
     if (onSubmit) await onSubmit(values);
   };
 
@@ -51,7 +51,7 @@ function LoginForm({ onSubmit }) {
         Sign in
       </Typography>
 
-      <form onSubmit={form.handleSubmit(handleTodoSubmit)}>
+      <form onSubmit={form.handleSubmit(handleLoginSubmit)}>
         <InputField form={form} name="identifier" label="Email" />
         <PasswordField form={form} name="password" label="Password" />
 

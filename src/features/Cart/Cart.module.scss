@@ -1,0 +1,154 @@
+.container {
+  max-width: 1400px !important;
+}
+
+.left {
+  flex: 1 1 0;
+}
+
+.right {
+  width: 300px;
+}
+
+.cartTitle {
+  margin: 8px 0 !important;
+}
+
+.cartHeader,
+.cartItem {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 2fr repeat(3, 1fr) 0.2fr;
+  padding: 4px 12px;
+  margin-bottom: 12px;
+}
+
+.cartHeaderItem {
+  text-align: center;
+  margin: 10px 10px 0 10px !important;
+}
+
+.cartList {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cartItemBox {
+  padding: 12px;
+}
+
+.cartItem {
+  margin-bottom: 0;
+  padding: 0;
+}
+
+.cartIconDelete {
+  cursor: pointer;
+  padding: 4px;
+}
+
+.cartItemQuantityForm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cartFormGroup {
+  align-items: center;
+  flex-flow: row nowrap !important;
+}
+
+.navigationBox {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.cartItemText {
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  margin: 0 10px !important;
+}
+
+.cartItemPrice {
+  color: #e92424;
+  font-weight: 600;
+}
+
+.cartPurchase {
+  padding: 12px !important;
+}
+
+.cartPurchaseRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.buttonPurchase {
+  background-color: #e92424 !important;
+  color: #fff !important;
+  padding: 8px auto;
+  font-size: 16px;
+  margin-top: 12px !important;
+
+  &:hover {
+    background-color: #db4040;
+  }
+}
+
+.originalPrice {
+  text-decoration: line-through !important;
+  font-size: 12px !important;
+  color: #ccc;
+  margin-left: 2px !important;
+}
+
+.cartPurchaseTotal {
+  margin-top: 28px;
+  border-top: 1px solid #ccc;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 8px;
+}
+
+.total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cartTotalPrice {
+  color: #e92424;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.noCartItems {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 100px;
+
+  & > p {
+    font-size: 1.8rem;
+  }
+
+  & > img {
+    margin: 40px 0;
+  }
+
+  & > button {
+    color: #fff !important;
+    background-color: #1976d2 !important;
+    padding: 8px 40px !important;
+  }
+}

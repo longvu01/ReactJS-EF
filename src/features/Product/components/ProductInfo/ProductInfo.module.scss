@@ -11,6 +11,7 @@
   margin-right: 24px;
   font-size: 1.6em;
   font-weight: bold;
+  color: #e92424;
 }
 
 .originalPrice {
@@ -19,6 +20,10 @@
 }
 
 .promotionPercent {
+  border: 2px solid #e92424;
+  color: #e92424;
+  padding: 1px;
+  font-weight: bold;
 }
 
 .priceBox {

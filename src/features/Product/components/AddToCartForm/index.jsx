@@ -1,18 +1,15 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button } from '@mui/material';
 import QuantityFiled from 'components/form-controls/QuantityFiled';
-import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
-AddToCardForm.propTypes = {
+AddToCartForm.propTypes = {
   onSubmit: PropTypes.func,
 };
 
-function AddToCardForm({ onSubmit = null }) {
-  const { enqueueSnackbar } = useSnackbar();
-
+function AddToCartForm({ onSubmit = null }) {
   const schema = yup.object().shape({
     quantity: yup
       .number()
@@ -31,17 +28,13 @@ function AddToCardForm({ onSubmit = null }) {
     resolver: yupResolver(schema),
   });
 
-  const handleCartSubmit = async (values) => {
-    if (onSubmit) await onSubmit(values);
+  const handleAddToCartSubmit = (values) => {
+    if (onSubmit) onSubmit(values);
     form.reset();
-    enqueueSnackbar('Add to cart successfully', {
-      variant: 'success',
-      autoHideDuration: 3000,
-    });
   };
 
   return (
-    <form onSubmit={form.handleSubmit(handleCartSubmit)}>
+    <form onSubmit={form.handleSubmit(handleAddToCartSubmit)}>
       <QuantityFiled form={form} name="quantity" label="Quantity" />
 
       <Button
@@ -57,4 +50,4 @@ function AddToCardForm({ onSubmit = null }) {
   );
 }
 
-export default AddToCardForm;
+export default AddToCartForm;

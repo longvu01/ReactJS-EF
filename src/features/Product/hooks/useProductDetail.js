@@ -1,28 +1,43 @@
 import productApi from 'api/productApi';
 import { useSnackbar } from 'notistack';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function useProductDetail(productId) {
   const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
 
+  const mounted = useRef(true);
+
   useEffect(() => {
-    (async () => {
+    const fetchData = async () => {
       try {
-        setLoading(true);
+        if (mounted.current) setLoading(true);
+
         const result = await productApi.get(productId);
-        setProduct(result);
+
+        if (mounted.current) setProduct(result);
       } catch (error) {
-        enqueueSnackbar(error.message, { variant: 'error' });
-        console.log('Failed to fetch product', error);
+        if (mounted.current) {
+          console.log('error', error);
+          setError(error);
+          enqueueSnackbar(error.message, { variant: 'error' });
+          console.log('Failed to fetch product', error);
+        }
       }
 
-      setLoading(false);
-    })();
+      if (mounted.current) setLoading(false);
+    };
+
+    fetchData();
+
+    return () => {
+      mounted.current = false;
+    };
   }, [productId]);
 
-  return { product, loading };
+  return { product, loading, error };
 }
 
 export default useProductDetail;

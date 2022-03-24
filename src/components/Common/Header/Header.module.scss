@@ -1,4 +1,16 @@
 .root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.userMenu {
+  z-index: 1001;
+}
+
+.dialogRoot {
   position: relative;
 }
 
@@ -14,7 +26,32 @@
   color: #ccc;
 }
 
-.tooltipButton {
-  padding: 2px 8px;
-  // color: #ccc;
+.tooltipRoot {
+  position: relative;
+  padding: 4px;
+}
+
+.tooltipButtonNavigate {
+  padding: 4px 12px !important;
+  color: #fff !important;
+  background-color: rgb(233, 36, 36) !important;
+  font-weight: normal !important;
+}
+
+.tooltipButtonClose {
+  position: absolute !important;
+  top: 2px;
+  right: 0px;
+  padding: 4px !important;
+  min-width: unset !important;
+  width: 10px !important;
+  height: 10px !important;
+  color: #999 !important;
+}
+
+.tooltipText {
+  font-size: 12px !important;
+  margin-bottom: 8px !important;
+  display: flex;
+  align-items: center;
 }

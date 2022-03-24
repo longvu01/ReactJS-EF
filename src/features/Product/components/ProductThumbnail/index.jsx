@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import { Carousel } from '@trendyol-js/react-carousel';
 import { STATIC_HOST } from 'constants';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import ReactImageMagnify from 'react-image-magnify';
 import { getPlaceholderThumbnailUrl } from 'utils';
 import styles from './ProductThumbnail.module.scss';
@@ -12,9 +12,11 @@ ProductThumbnail.propTypes = {
 };
 
 function ProductThumbnail({ product }) {
-  const thumbnailUrl = product.thumbnail
-    ? `${STATIC_HOST}${product.thumbnail.url}`
-    : getPlaceholderThumbnailUrl(product.category?.id);
+  const [thumbnailUrl, setThumbnailUrl] = useState(() =>
+    product.thumbnail
+      ? `${STATIC_HOST}${product.thumbnail.url}`
+      : getPlaceholderThumbnailUrl(product.category?.id)
+  );
 
   return (
     <Box className={styles.root}>
@@ -30,8 +32,8 @@ function ProductThumbnail({ product }) {
           largeImage: {
             src: thumbnailUrl,
             alt: `${product.name}`,
-            width: 900,
-            height: 1600,
+            width: 1000,
+            height: 1000,
           },
           isActivatedOnTouch: true,
           isHintEnabled: true,
@@ -39,36 +41,17 @@ function ProductThumbnail({ product }) {
         }}
       />
       <Carousel show={5} slide={3} swiping rightArrow leftArrow>
-        <img
-          src={thumbnailUrl}
-          alt={product.name}
-          className={styles.reviewImagesItem}
-        />
-        <img
-          src={thumbnailUrl}
-          alt={product.name}
-          className={styles.reviewImagesItem}
-        />
-        <img
-          src={thumbnailUrl}
-          alt={product.name}
-          className={styles.reviewImagesItem}
-        />
-        <img
-          src={thumbnailUrl}
-          alt={product.name}
-          className={styles.reviewImagesItem}
-        />
-        <img
-          src={thumbnailUrl}
-          alt={product.name}
-          className={styles.reviewImagesItem}
-        />
-        <img
-          src={thumbnailUrl}
-          alt={product.name}
-          className={styles.reviewImagesItem}
-        />
+        {/* Fake slider */}
+        {Array.from(new Array(6)).map((_, index) => (
+          <Box key={index} margin={1}>
+            <img
+              src={thumbnailUrl}
+              alt={product.name}
+              onClick={(e) => setThumbnailUrl(e.target.src)}
+              className={styles.reviewImagesItem}
+            />
+          </Box>
+        ))}
       </Carousel>
     </Box>
   );

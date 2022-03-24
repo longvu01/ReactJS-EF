@@ -1,0 +1,24 @@
+.notFoundBox {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 100px;
+
+  & > p {
+    font-size: 1.8rem;
+    margin-bottom: 40px;
+  }
+
+  & > img {
+    margin: 40px 0;
+  }
+
+  & > button {
+    color: #fff !important;
+    background-color: #1976d2 !important;
+    padding: 8px 40px !important;
+  }
+}

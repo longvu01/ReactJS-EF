@@ -64,6 +64,7 @@ function ProductCardDemo({ product = {} }) {
         </Box>
       </Box>
       <CardMedia
+        className={styles.cardMedia}
         component="img"
         sx={{ width: 151 }}
         image={thumbnailUrl}

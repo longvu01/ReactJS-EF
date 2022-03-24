@@ -54,6 +54,18 @@ function FilterViewer({ filters = {}, onChange = null, categoryActive = '' }) {
       },
       {
         id: 4,
+        getLabel: (filters) => `\`${filters['category.searchTerm']}\``,
+        isActive: () => true,
+        isVisible: (filters) => filters['category.searchTerm'],
+        isRemovable: true,
+        onRemove: (filters) => {
+          delete filters['category.searchTerm'];
+          return filters;
+        },
+        onToggle: () => {},
+      },
+      {
+        id: 5,
         getLabel: (filters) =>
           `Từ ${formatCurrency(filters.salePrice_gte)} đến ${formatCurrency(
             filters.salePrice_lte

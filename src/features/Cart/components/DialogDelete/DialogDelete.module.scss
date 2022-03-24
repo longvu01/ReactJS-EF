@@ -1,0 +1,18 @@
+.title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.titleIcon {
+  color: rgb(255, 145, 0) !important;
+}
+
+.buttonActive {
+  color: #fff !important;
+  background-color: #1976d2 !important;
+}
+
+.buttonCancel {
+  border: 1px solid #1976d2;
+}

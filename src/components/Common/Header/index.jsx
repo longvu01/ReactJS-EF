@@ -1,4 +1,6 @@
 import { AccountCircle, Close, ShoppingCart } from '@mui/icons-material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CloseIcon from '@mui/icons-material/Close';
 import CodeIcon from '@mui/icons-material/Code';
 import {
   Badge,
@@ -19,11 +21,19 @@ import Typography from '@mui/material/Typography';
 import Login from 'features/Auth/component/Login';
 import Register from 'features/Auth/component/Register';
 import { logout } from 'features/Auth/userSlice';
+import {
+  getExistingCart,
+  hideMiniCart,
+  showMiniCart,
+} from 'features/Cart/cartSlice';
 import { cartItemsCountSelector } from 'features/Cart/selectors';
 import EZLogo from 'imgs/EZ-logo.png';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { getExistingCartStorage } from 'utils';
+import FormSearch from './components/FormSearch';
+import NavLinkHeader from './components/NavLinkHeader';
 import styles from './Header.module.scss';
 
 const MODE = {
@@ -33,19 +43,27 @@ const MODE = {
 
 function Header() {
   const navigate = useNavigate();
-  const tooltipRef = useRef();
+  const tooltipTimeoutId = useRef();
 
   // Redux state
   const dispatch = useDispatch();
   const loggedInUser = useSelector((state) => state.user.current);
   const isLoggedIn = Boolean(loggedInUser.id);
   const cartItemsCount = useSelector(cartItemsCountSelector);
+  const openTooltip = useSelector((state) => state.cart.isShowMiniCart);
 
   // React state
   const [openDialog, setOpenDialog] = useState(false);
-  const [openTooltip, setOpenTooltip] = useState(false);
   const [mode, setMode] = useState(MODE.LOGIN);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const cartData = getExistingCartStorage();
+
+      if (cartData) dispatch(getExistingCart(cartData));
+    }
+  }, []);
 
   // Dialog
   const handleClickOpenDialog = () => {
@@ -69,8 +87,7 @@ function Header() {
 
   // Logout
   const handleLogoutClick = () => {
-    const action = logout();
-    dispatch(action);
+    dispatch(logout());
 
     setAnchorEl(null);
   };
@@ -81,31 +98,35 @@ function Header() {
 
   // Tooltip cart
   useEffect(() => {
-    if (cartItemsCount > 0) {
-      setOpenTooltip(true);
-      tooltipRef.current = setTimeout(() => {
-        setOpenTooltip(false);
-      }, 3000);
-    }
-    return () => {
-      clearTimeout(tooltipRef.current);
-    };
-  }, [cartItemsCount]);
+    if (openTooltip) {
+      dispatch(showMiniCart());
 
-  const handleCloseTooltip = () => {
-    setOpenTooltip(false);
+      tooltipTimeoutId.current = setTimeout(() => {
+        dispatch(hideMiniCart());
+      }, 50000);
+    }
+
+    return () => {
+      clearTimeout(tooltipTimeoutId.current);
+      dispatch(hideMiniCart());
+    };
+  }, [cartItemsCount, openTooltip]);
+
+  const handleCloseMiniCart = () => {
+    dispatch(hideMiniCart());
   };
 
-  const handleOpenTooltip = () => {
-    setOpenTooltip(true);
+  const handleGoToCartClick = () => {
+    navigate('cart');
+    dispatch(hideMiniCart());
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1 }} className={styles.root}>
       <AppBar position="static">
         <Toolbar>
+          {/* Icon */}
           <CodeIcon style={{ padding: 4 }} />
-
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <Link className={styles.link} to="/">
               <img
@@ -118,50 +139,15 @@ function Header() {
             </Link>
           </Typography>
 
-          {/* Link */}
-          <NavLink
-            className={styles.link}
-            to="/products"
-            style={({ isActive }) =>
-              isActive
-                ? {
-                    color: 'orangered',
-                  }
-                : undefined
-            }
-          >
-            <Button color="inherit">ListPage</Button>
-          </NavLink>
+          {/* Form Search */}
+          <FormSearch />
 
-          <NavLink
-            className={styles.link}
-            to="/todos"
-            style={({ isActive }) =>
-              isActive
-                ? {
-                    color: 'orangered',
-                  }
-                : undefined
-            }
-          >
-            <Button color="inherit">Todos</Button>
-          </NavLink>
+          {/* Links */}
+          <NavLinkHeader to="products" content="ListPage" />
+          <NavLinkHeader to="todos" content="Todos" />
+          <NavLinkHeader to="albums" content="Albums" />
 
-          <NavLink
-            className={styles.link}
-            to="/albums"
-            style={({ isActive }) =>
-              isActive
-                ? {
-                    color: 'orangered',
-                  }
-                : undefined
-            }
-          >
-            <Button color="inherit">Albums</Button>
-          </NavLink>
-          {/* Link */}
-
+          {/* Button login/out */}
           {!isLoggedIn && (
             <Button color="inherit" onClick={handleClickOpenDialog}>
               Login
@@ -174,25 +160,36 @@ function Header() {
             </IconButton>
           )}
 
+          {/* Cart tooltip */}
           <Tooltip
             title={
-              <Paper>
+              <Paper className={styles.tooltipRoot} elevation={0}>
                 <Button
                   color="primary"
                   size="small"
-                  className={styles.tooltipButton}
-                  onClick={() => navigate('/cart')}
+                  className={styles.tooltipButtonClose}
+                  onClick={handleCloseMiniCart}
                 >
-                  Go to Cart
+                  <CloseIcon />
+                </Button>
+                <Typography className={styles.tooltipText}>
+                  <CheckCircleIcon style={{ color: 'green' }} />
+                  Thêm hàng vào giỏ thành công!
+                </Typography>
+                <Button
+                  size="small"
+                  className={styles.tooltipButtonNavigate}
+                  onClick={handleGoToCartClick}
+                >
+                  Xem giỏ hàng và thanh toán
                 </Button>
               </Paper>
             }
             arrow
             open={openTooltip}
-            onClose={handleCloseTooltip}
-            onOpen={handleOpenTooltip}
             placement="bottom-end"
             // followCursor
+            disableHoverListener
           >
             <IconButton
               size="large"
@@ -208,7 +205,9 @@ function Header() {
         </Toolbar>
       </AppBar>
 
+      {/* User menu when logged in */}
       <Menu
+        className={styles.userMenu}
         anchorEl={anchorEl}
         open={openMenu}
         onClose={handleCloseMenu}
@@ -231,8 +230,9 @@ function Header() {
         <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
       </Menu>
 
+      {/* Dialog login/ register */}
       <Dialog
-        className={styles.root}
+        className={styles.dialogRoot}
         disableEscapeKeyDown
         open={openDialog}
         onClose={handleCloseDialog}

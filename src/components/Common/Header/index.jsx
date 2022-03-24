@@ -103,7 +103,7 @@ function Header() {
 
       tooltipTimeoutId.current = setTimeout(() => {
         dispatch(hideMiniCart());
-      }, 50000);
+      }, 5000);
     }
 
     return () => {

@@ -5,6 +5,7 @@ import CartFeature from 'features/Cart';
 import Counter from 'features/Counter';
 import ProductFeature from 'features/Product';
 import HomePage from 'pages/HomePage';
+import MainPage from 'pages/MainPage';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './App.scss';
@@ -15,7 +16,8 @@ function App() {
     <GlobalStyles>
       <div className="app">
         <Routes>
-          <Route path="/" element={<HomePage />}>
+          <Route path="/" element={<MainPage />}>
+            <Route index element={<HomePage />} />
             <Route path="todos/*" element={<TodoFeature />} />
             <Route path="albums" element={<AlbumFeature />} />
             <Route path="products/*" element={<ProductFeature />} />

@@ -32,7 +32,7 @@ axiosClient.interceptors.response.use(
     const { config, status, data } = error?.response;
     const URLS = ['/auth/local/register', '/auth/local'];
 
-    // If register failed
+    // If register/ login failed
     if (URLS.includes(config?.url) && status === 400) {
       const errorList = data.data || [];
       const firstError = errorList[0] || {};

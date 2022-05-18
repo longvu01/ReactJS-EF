@@ -20,7 +20,7 @@ function PasswordField(props) {
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
+    setShowPassword((x) => !x);
   };
 
   return (

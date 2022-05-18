@@ -1,9 +1,12 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 DetailPage.propTypes = {};
 
 function DetailPage(props) {
-  return <div>Todo DetailPage</div>;
+  const { todoId } = useParams();
+
+  return <div>{`Todo Detail ${todoId}`}</div>;
 }
 
 export default DetailPage;

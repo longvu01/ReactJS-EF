@@ -7,11 +7,13 @@ import ListPage from './pages/ListPage';
 TodoFeature.propTypes = {};
 
 function TodoFeature(props) {
+  const rdNum = Math.trunc(Math.random() * 100);
+
   return (
-    <div>
+    <div style={{ padding: 24 }}>
       TODO SHARED UI
       <br />
-      <Link to="123">Detail 123</Link>
+      <Link to={`${rdNum}`}>Detail page with random number</Link>
       <Routes>
         <Route index element={<ListPage />} />
         <Route path=":todoId" element={<DetailPage />} />

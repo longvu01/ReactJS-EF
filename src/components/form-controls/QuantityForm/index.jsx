@@ -18,7 +18,7 @@ QuantityForm.propTypes = {
 };
 
 function QuantityForm(props) {
-  const { form, name, label, disabled, onSetQuantity } = props;
+  const { form, name, label, onSetQuantity } = props;
   const { setValue } = form;
 
   return (

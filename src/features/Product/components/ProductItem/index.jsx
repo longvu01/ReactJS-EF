@@ -18,16 +18,18 @@ function ProductItem({ product }) {
     : getPlaceholderThumbnailUrl(product.category?.id);
 
   const handleClick = () => {
-    navigate(`${product.id}`);
+    // navigate(`${product.id}`);
+    navigate(product.id.toString());
   };
 
   return (
-    <Box padding={1} onClick={handleClick}>
-      <Box padding={1} className={styles.thumbnailContainer}>
+    <Box padding={1} className={styles.root} onClick={handleClick}>
+      <Box className={styles.thumbnailContainer}>
         <img
           src={thumbnailUrl}
           alt={product.name}
           className={styles.thumbnail}
+          width="100%"
         />
       </Box>
 

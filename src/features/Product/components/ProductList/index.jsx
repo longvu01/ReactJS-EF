@@ -16,14 +16,14 @@ function ProductList({ data, onReset }) {
   const isEmpty = data.length === 0;
 
   const handleClickReset = () => {
-    if (onReset) onReset();
+    onReset?.();
   };
 
   return (
     <>
       {!isEmpty ? (
         <Box>
-          <Grid container>
+          <Grid container spacing={2}>
             {data.map((product) => (
               <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
                 <ProductItem product={product} />

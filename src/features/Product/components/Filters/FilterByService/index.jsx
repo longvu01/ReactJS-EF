@@ -12,18 +12,18 @@ FilterByService.defaultProps = {
   filters: {},
 };
 
-function FilterByService({ filters, onChange }) {
-  const initService = [
-    {
-      value: 'isPromotion',
-      label: 'Có khuyến mãi',
-    },
-    {
-      value: 'isFreeShip',
-      label: 'Vận chuyển miễn phí',
-    },
-  ];
+const initService = [
+  {
+    value: 'isPromotion',
+    label: 'Có khuyến mãi',
+  },
+  {
+    value: 'isFreeShip',
+    label: 'Vận chuyển miễn phí',
+  },
+];
 
+function FilterByService({ filters, onChange }) {
   const handleChange = (e) => {
     if (!onChange) return;
 

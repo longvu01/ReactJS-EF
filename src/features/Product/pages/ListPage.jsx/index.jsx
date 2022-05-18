@@ -11,26 +11,24 @@ import FilterSkeletonList from 'features/Product/components/skeletonLoading/Filt
 import PaginationSkeleton from 'features/Product/components/skeletonLoading/PaginationSkeleton';
 import ProductSkeletonList from 'features/Product/components/skeletonLoading/ProductSkeletonList';
 import queryString from 'query-string';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import styles from './ListPage.module.scss';
 
-ListPage.propTypes = {};
+const initFilters = {
+  _page: 1,
+  _limit: 12,
+  _sort: 'salePrice:ASC',
+};
+
+const initPagination = {
+  page: 1,
+  limit: 12,
+  total: 10,
+};
 
 function ListPage(props) {
   const location = useLocation();
-
-  const initFilters = {
-    _page: 1,
-    _limit: 12,
-    _sort: 'salePrice:ASC',
-  };
-
-  const initPagination = {
-    page: 1,
-    limit: 12,
-    total: 10,
-  };
 
   // const mounted = useRef(true);
 
@@ -44,6 +42,7 @@ function ListPage(props) {
   const [pagination, setPagination] = useState(initPagination);
 
   const [searchParams, setSearchParams] = useSearchParams();
+
   const queryParams = useMemo(() => {
     const paramsParse = queryString.parse(location.search);
     const categorySearchTerm = location.state?.searchTerm?.search;
@@ -62,9 +61,11 @@ function ListPage(props) {
 
     if (!paramsParse['category.searchTerm'])
       delete params['category.searchTerm'];
-
     return params;
   }, [location.search]);
+
+  const countPagination = Math.ceil(pagination.total / pagination.limit);
+  const currentPage = pagination.page;
 
   // Set search params if search from another page
   useEffect(() => {
@@ -74,11 +75,9 @@ function ListPage(props) {
     }
   }, []);
 
-  const countPagination = Math.ceil(pagination.total / pagination.limit);
-  const currentPage = pagination.page;
-
+  // Fetch data
   useEffect(() => {
-    // Fetch data list + pagination
+    // List + pagination
     const fetchDataProductsAndPagination = async () => {
       try {
         const { data, pagination } = await productApi.getAll(queryParams);
@@ -94,7 +93,7 @@ function ListPage(props) {
       setLoadingList(false);
     };
 
-    // Fetch data category
+    // Categories
     const fetchDataCategories = async () => {
       try {
         const list = await categoryApi.getAll();
@@ -113,11 +112,12 @@ function ListPage(props) {
       } catch (error) {
         console.log('Failed to fetch category list: ', error);
       }
-      //
+
       // if (mounted.current) setLoadingCate(false);
       setLoadingCate(false);
     };
 
+    //
     fetchDataProductsAndPagination();
     fetchDataCategories();
 
@@ -144,32 +144,14 @@ function ListPage(props) {
     setSearchParams(queryString.stringify(filters));
   };
 
-  const handleFiltersChange = (newFilters, isResetPriceRange = true) => {
-    const filters = {
-      ...queryParams,
-      ...newFilters,
-      _page: 1,
-    };
-
-    const categoryActiveId = queryParams['category.id'];
-    if (categoryActiveId) {
-      const categoryActive = categoryList.find(
-        (item) => item.id === +categoryActiveId
-      );
-      setCategoryActive(categoryActive.name);
+  const handleViewerChange = (newFilters, isReset = false) => {
+    if (isReset) {
+      setSearchParams(queryString.stringify(initFilters));
+      setCategoryActive('');
+      return;
     }
 
-    if (isResetPriceRange) {
-      delete filters.salePrice_gte;
-      delete filters.salePrice_lte;
-    }
-
-    setSearchParams(queryString.stringify(filters));
-  };
-
-  const handleViewerChange = (newFilters) => {
     const filters = {
-      ...queryParams,
       ...newFilters,
       _page: 1,
     };
@@ -179,7 +161,42 @@ function ListPage(props) {
     setSearchParams(queryString.stringify(filters));
   };
 
-  const handleResetFilters = () => {
+  const handleFiltersChange = (newFilters, isCateChange = false) => {
+    const prevFilters = isCateChange ? initFilters : queryParams;
+
+    const filters = {
+      ...prevFilters,
+      ...newFilters,
+      _page: 1,
+    };
+
+    // Set active category
+    const categoryActiveId = queryParams['category.id'];
+    if (categoryActiveId) {
+      const categoryActive = categoryList.find(
+        (item) => item.id === +categoryActiveId
+      );
+      setCategoryActive(categoryActive.name);
+    }
+
+    setSearchParams(queryString.stringify(filters));
+  };
+
+  const handleResetFilters = (isResetPriceRange = false) => {
+    if (isResetPriceRange) {
+      const filters = {
+        ...queryParams,
+        _page: 1,
+      };
+
+      delete filters.salePrice_gte;
+      delete filters.salePrice_lte;
+
+      setSearchParams(queryString.stringify(filters));
+      return;
+    }
+
+    setCategoryActive('');
     setSearchParams(queryString.stringify(initFilters));
   };
 
@@ -216,13 +233,14 @@ function ListPage(props) {
                 onChange={handleViewerChange}
                 categoryActive={categoryActive}
               />
-              {/*  */}
-              {loadingList ? (
+              {/* Show skeleton if fetching */}
+              {loadingList && (
                 <>
                   <ProductSkeletonList length={12} />
                   <PaginationSkeleton length={6} />
                 </>
-              ) : (
+              )}
+              {!loadingList && (
                 <>
                   <ProductList
                     data={productList}

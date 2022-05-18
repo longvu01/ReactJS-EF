@@ -2,7 +2,6 @@ import { Box, Button, TextField, Typography } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import propTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import styles from './FilterByPrice.module.scss';
 
 FilterByPrice.propTypes = {
@@ -10,12 +9,13 @@ FilterByPrice.propTypes = {
   onChange: propTypes.func,
 };
 
-function FilterByPrice({ filters, onChange }) {
+const initValues = {
+  salePrice_gte: '',
+  salePrice_lte: '',
+};
+
+function FilterByPrice({ filters, onChange, onReset }) {
   const { salePrice_gte, salePrice_lte } = filters;
-  const initValues = {
-    salePrice_gte: '',
-    salePrice_lte: '',
-  };
 
   const [values, setValues] = useState(() => {
     if (salePrice_gte && salePrice_lte) return filters;
@@ -23,15 +23,13 @@ function FilterByPrice({ filters, onChange }) {
   });
   const { enqueueSnackbar } = useSnackbar();
 
-  const location = useLocation();
-
   useEffect(() => {
     if (salePrice_gte && salePrice_lte) {
       setValues(filters);
     } else {
       setValues(initValues);
     }
-  }, [location.search]);
+  }, [filters, salePrice_gte, salePrice_lte]);
 
   // Handler
   const handleChange = (e) => {
@@ -61,8 +59,7 @@ function FilterByPrice({ filters, onChange }) {
   };
 
   const handleReset = () => {
-    setValues(initValues);
-    if (onChange) onChange(initValues, true);
+    onReset?.();
   };
 
   return (

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 
-SearchFiled.propTypes = {
+SearchField.propTypes = {
   form: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
 
@@ -11,7 +11,7 @@ SearchFiled.propTypes = {
   disabled: PropTypes.bool,
 };
 
-function SearchFiled(props) {
+function SearchField(props) {
   const { form, name, label, disabled } = props;
   return (
     <Controller
@@ -42,4 +42,4 @@ function SearchFiled(props) {
   );
 }
 
-export default SearchFiled;
+export default SearchField;

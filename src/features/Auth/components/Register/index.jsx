@@ -20,27 +20,22 @@ function Register({ closeDialog }) {
       // Dispatch action + unwrap result
       await dispatch(register(values)).unwrap();
 
-      if (closeDialog) closeDialog();
+      closeDialog?.();
 
       // Show notistack
-      enqueueSnackbar('Register successfully', {
+      enqueueSnackbar('Register successfully!', {
         variant: 'success',
-        autoHideDuration: 3000,
+        persist: false,
       });
     } catch (error) {
-      // Show notistack
       enqueueSnackbar(error.message, {
         variant: 'error',
-        autoHideDuration: 3000,
+        persist: false,
       });
     }
   };
 
-  return (
-    <div>
-      <RegisterForm onSubmit={handleSubmit} />
-    </div>
-  );
+  return <RegisterForm onSubmit={handleSubmit} />;
 }
 
 export default Register;

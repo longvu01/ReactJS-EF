@@ -35,7 +35,7 @@ function useProductDetail(productId) {
     return () => {
       mounted.current = false;
     };
-  }, [productId]);
+  }, [productId, enqueueSnackbar]);
 
   return { product, loading, error };
 }

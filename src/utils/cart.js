@@ -1,11 +1,20 @@
 const getExistingCartStorage = () => {
-  const { id } = JSON.parse(localStorage.getItem('user'));
-  return JSON.parse(localStorage.getItem(`user-cart-${id}`));
+  const userStorage = JSON.parse(localStorage.getItem('user'));
+
+  if (!userStorage) return;
+
+  return JSON.parse(localStorage.getItem(`user-cart-${userStorage.id}`));
 };
 
 const saveCartToStorage = (cartItems) => {
-  const { id } = JSON.parse(localStorage.getItem('user'));
-  localStorage.setItem(`user-cart-${id}`, JSON.stringify(cartItems));
+  const userStorage = JSON.parse(localStorage.getItem('user'));
+
+  if (!userStorage) return;
+
+  localStorage.setItem(
+    `user-cart-${userStorage.id}`,
+    JSON.stringify(cartItems)
+  );
 };
 
 const addItemToCartStorage = (cartItems) => {
@@ -30,6 +39,8 @@ const addItemToCartStorage = (cartItems) => {
 const setQuantityCartItem = (id, quantity) => {
   let cartData = getExistingCartStorage();
 
+  if (!cartData) return;
+
   const index = cartData.findIndex((item) => item.id === id);
 
   if (index >= 0) cartData[index].quantity = quantity;
@@ -39,6 +50,8 @@ const setQuantityCartItem = (id, quantity) => {
 
 const setCartItemStorageActive = (id, isActive) => {
   let cartData = getExistingCartStorage();
+
+  if (!cartData) return;
 
   const index = cartData.findIndex((item) => item.id === id);
 
@@ -50,6 +63,8 @@ const setCartItemStorageActive = (id, isActive) => {
 const setAllCartItemStorageActive = (isActive) => {
   let cartData = getExistingCartStorage();
 
+  if (!cartData) return;
+
   cartData.forEach((item) => {
     item.isActive = isActive;
   });
@@ -60,6 +75,8 @@ const setAllCartItemStorageActive = (isActive) => {
 const removeFromCartStorage = (id) => {
   let cartData = getExistingCartStorage();
 
+  if (!cartData) return;
+
   cartData = cartData.filter((item) => item.id !== id);
 
   saveCartToStorage(cartData);
@@ -67,6 +84,8 @@ const removeFromCartStorage = (id) => {
 
 const removeCartItemStorageActive = (id) => {
   let cartData = getExistingCartStorage();
+
+  if (!cartData) return;
 
   cartData = cartData.filter((item) => item.isActive !== true);
 
@@ -76,7 +95,14 @@ const removeCartItemStorageActive = (id) => {
 const purchaseCartItems = () => {
   let cartData = getExistingCartStorage();
 
-  const purchaseCart = cartData.filter((item) => item.isActive);
+  if (!cartData) return;
+
+  const purchaseCart = cartData
+    .filter((item) => item.isActive)
+    .map((item) => ({
+      id: item.id,
+      quantity: item.quantity,
+    }));
   cartData = cartData.filter((item) => !item.isActive);
 
   console.log('purchaseCart localStorage', purchaseCart);

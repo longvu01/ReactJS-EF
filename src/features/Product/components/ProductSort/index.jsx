@@ -9,7 +9,7 @@ ProductSort.propTypes = {
 
 function ProductSort({ currentSort, onChange }) {
   const handleSortChange = (e, newValue) => {
-    if (onChange) onChange(newValue);
+    onChange?.(newValue);
   };
 
   return (

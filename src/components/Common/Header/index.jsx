@@ -18,13 +18,15 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Login from 'features/Auth/component/Login';
-import Register from 'features/Auth/component/Register';
+import Login from 'features/Auth/components/Login';
+import Register from 'features/Auth/components/Register';
 import { logout } from 'features/Auth/userSlice';
 import {
   getExistingCart,
   hideMiniCart,
+  resetCart,
   showMiniCart,
+  unSetRequireLogin,
 } from 'features/Cart/cartSlice';
 import { cartItemsCountSelector } from 'features/Cart/selectors';
 import EZLogo from 'imgs/EZ-logo.png';
@@ -46,24 +48,31 @@ function Header() {
   const tooltipTimeoutId = useRef();
 
   // Redux state
-  const dispatch = useDispatch();
   const loggedInUser = useSelector((state) => state.user.current);
   const isLoggedIn = Boolean(loggedInUser.id);
   const cartItemsCount = useSelector(cartItemsCountSelector);
+  const isRequireLogin = useSelector((state) => state.cart.isRequireLogin);
   const openTooltip = useSelector((state) => state.cart.isShowMiniCart);
+  const dispatch = useDispatch();
 
   // React state
   const [openDialog, setOpenDialog] = useState(false);
   const [mode, setMode] = useState(MODE.LOGIN);
   const [anchorEl, setAnchorEl] = useState(null);
 
+  // If add item to cart without logged in
+  useEffect(() => {
+    if (isRequireLogin) setOpenDialog(true);
+  }, [isRequireLogin]);
+
   useEffect(() => {
     if (isLoggedIn) {
+      // console.log({ isLoggedIn });
       const cartData = getExistingCartStorage();
 
       if (cartData) dispatch(getExistingCart(cartData));
     }
-  }, []);
+  }, [isLoggedIn, dispatch]);
 
   // Dialog
   const handleClickOpenDialog = () => {
@@ -72,6 +81,7 @@ function Header() {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+    dispatch(unSetRequireLogin());
   };
 
   // Menu
@@ -89,7 +99,10 @@ function Header() {
   const handleLogoutClick = () => {
     dispatch(logout());
 
-    setAnchorEl(null);
+    // Reset redux cart
+    dispatch(resetCart());
+
+    handleCloseMenu();
   };
 
   const handleCartClick = () => {
@@ -110,7 +123,7 @@ function Header() {
       clearTimeout(tooltipTimeoutId.current);
       dispatch(hideMiniCart());
     };
-  }, [cartItemsCount, openTooltip]);
+  }, [cartItemsCount, openTooltip, dispatch]);
 
   const handleCloseMiniCart = () => {
     dispatch(hideMiniCart());

@@ -1,3 +1,4 @@
+import ClearIcon from '@mui/icons-material/Clear';
 import { Chip } from '@mui/material';
 import { Box } from '@mui/system';
 import PropTypes from 'prop-types';
@@ -14,6 +15,7 @@ FilterViewer.propTypes = {
 function FilterViewer({ filters = {}, onChange = null, categoryActive = '' }) {
   const FILTER_LIST = useMemo(() => {
     return [
+      // Free ship
       {
         id: 1,
         getLabel: () => 'Giao hàng miễn phí',
@@ -28,6 +30,7 @@ function FilterViewer({ filters = {}, onChange = null, categoryActive = '' }) {
           return filters;
         },
       },
+      // Active category
       {
         id: 2,
         getLabel: () => categoryActive,
@@ -40,6 +43,7 @@ function FilterViewer({ filters = {}, onChange = null, categoryActive = '' }) {
         },
         onToggle: () => {},
       },
+      // Promotion
       {
         id: 3,
         getLabel: () => 'Có khuyến mãi',
@@ -52,6 +56,7 @@ function FilterViewer({ filters = {}, onChange = null, categoryActive = '' }) {
         },
         onToggle: () => {},
       },
+      // Search term
       {
         id: 4,
         getLabel: (filters) => `\`${filters['category.searchTerm']}\``,
@@ -64,6 +69,7 @@ function FilterViewer({ filters = {}, onChange = null, categoryActive = '' }) {
         },
         onToggle: () => {},
       },
+      // Price range
       {
         id: 5,
         getLabel: (filters) =>
@@ -92,10 +98,6 @@ function FilterViewer({ filters = {}, onChange = null, categoryActive = '' }) {
     ];
   }, [categoryActive]);
 
-  const visibleFilters = useMemo(() => {
-    return FILTER_LIST.filter((item) => item.isVisible(filters));
-  }, [filters, FILTER_LIST]);
-
   // Handlers
   const handleToggleFilter = (filterItem) => {
     if (!onChange) return;
@@ -111,6 +113,10 @@ function FilterViewer({ filters = {}, onChange = null, categoryActive = '' }) {
     onChange(newFilters);
   };
 
+  const visibleFilters = useMemo(() => {
+    return FILTER_LIST.filter((item) => item.isVisible(filters));
+  }, [filters, FILTER_LIST]);
+
   return (
     <Box component="ul" className={styles.root}>
       <Chip label="EZ SHOP" color="secondary" className={styles.chipMain} />
@@ -125,6 +131,21 @@ function FilterViewer({ filters = {}, onChange = null, categoryActive = '' }) {
           />
         </li>
       ))}
+      {visibleFilters.length > 1 && (
+        <Chip
+          label="Xóa tất cả"
+          color="error"
+          variant="outlined"
+          clickable
+          onClick={() => {
+            onChange?.({}, true);
+          }}
+          onDelete={() => {
+            // Just for display delete icon
+          }}
+          deleteIcon={<ClearIcon />}
+        />
+      )}
     </Box>
   );
 }

@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   isShowMiniCart: false,
+  isRequireLogin: false,
   cartItems: [],
 };
 
@@ -15,6 +16,14 @@ const cartSlice = createSlice({
 
     hideMiniCart(state) {
       state.isShowMiniCart = false;
+    },
+
+    setRequireLogin(state) {
+      state.isRequireLogin = true;
+    },
+
+    unSetRequireLogin(state) {
+      state.isRequireLogin = false;
     },
 
     getExistingCart(state, action) {
@@ -66,14 +75,18 @@ const cartSlice = createSlice({
       );
     },
 
-    removeCartItemsActive(state, action) {
+    removeCartItemsActive(state) {
       state.cartItems = state.cartItems.filter(
         (item) => item.isActive !== true
       );
     },
 
-    purchaseCartItem(state, action) {
+    purchaseCartItem(state) {
       state.cartItems = state.cartItems.filter((item) => !item.isActive);
+    },
+
+    resetCart(state) {
+      state.cartItems = [];
     },
   },
 });
@@ -83,6 +96,8 @@ const { actions, reducer } = cartSlice;
 export const {
   showMiniCart,
   hideMiniCart,
+  setRequireLogin,
+  unSetRequireLogin,
   getExistingCart,
   addToCart,
   setQuantity,
@@ -91,6 +106,7 @@ export const {
   removeFromCart,
   removeCartItemsActive,
   purchaseCartItem,
+  resetCart,
 } = actions;
 
 export default reducer;

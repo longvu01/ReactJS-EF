@@ -13,20 +13,26 @@ ProductFilters.propTypes = {
 };
 
 function ProductFilters({ filters, categoryList, onChange, onReset }) {
+  const filterPrice = {
+    salePrice_gte: +filters.salePrice_gte,
+    salePrice_lte: +filters.salePrice_lte,
+  };
+
   const handleCategoryChange = (categoryId) => {
     if (!onChange) return;
 
     const newFilters = {
       'category.id': categoryId,
     };
-    onChange(newFilters);
+    onChange(newFilters, true);
   };
 
-  const handleFiltersChange = (values, isReset = false) => {
-    if (onChange) onChange(values, false);
-    if (isReset) {
-      onReset();
-    }
+  const handleFiltersChange = (values) => {
+    if (onChange) onChange(values);
+  };
+
+  const handleResetPriceRange = () => {
+    if (onReset) onReset(true);
   };
 
   return (
@@ -37,11 +43,9 @@ function ProductFilters({ filters, categoryList, onChange, onReset }) {
         activeCategoryId={filters['category.id']}
       />
       <FilterByPrice
-        filters={{
-          salePrice_gte: +filters.salePrice_gte,
-          salePrice_lte: +filters.salePrice_lte,
-        }}
+        filters={filterPrice}
         onChange={handleFiltersChange}
+        onReset={handleResetPriceRange}
       />
       <FilterByService filters={filters} onChange={handleFiltersChange} />
     </Box>

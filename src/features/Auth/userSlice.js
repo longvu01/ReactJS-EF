@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import userApi from 'api/userApi';
 import StorageKeys from 'constants/storage-keys';
 
-const register = createAsyncThunk('users/register', async (payload) => {
+// Async acts
+const register = createAsyncThunk('user/register', async (payload) => {
   const data = await userApi.register(payload);
 
   localStorage.setItem(StorageKeys.TOKEN, data.jwt);
@@ -11,7 +12,7 @@ const register = createAsyncThunk('users/register', async (payload) => {
   return data.user;
 });
 
-const login = createAsyncThunk('users/login', async (payload) => {
+const login = createAsyncThunk('user/login', async (payload) => {
   const data = await userApi.login(payload);
 
   localStorage.setItem(StorageKeys.TOKEN, data.jwt);
@@ -20,6 +21,7 @@ const login = createAsyncThunk('users/login', async (payload) => {
   return data.user;
 });
 
+//
 const initialState = {
   current: JSON.parse(localStorage.getItem(StorageKeys.USER)) || {},
   settings: {},
@@ -29,7 +31,8 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    logout(state, action) {
+    logout(state) {
+      // clear local storage
       localStorage.removeItem(StorageKeys.USER);
       localStorage.removeItem(StorageKeys.TOKEN);
 

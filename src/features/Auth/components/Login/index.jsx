@@ -18,7 +18,7 @@ function Login({ closeDialog }) {
     try {
       await dispatch(login(values)).unwrap();
       // Close Dialog
-      if (closeDialog) closeDialog();
+      closeDialog?.();
 
       const cartData = getExistingCartStorage();
 

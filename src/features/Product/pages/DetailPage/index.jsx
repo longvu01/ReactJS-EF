@@ -9,7 +9,11 @@ import {
 } from '@mui/material';
 import LinearProgressLoading from 'components/Common/LinearProgressLoading';
 import NotFound from 'components/Common/NotFound';
-import { addToCart, showMiniCart } from 'features/Cart/cartSlice';
+import {
+  addToCart,
+  setRequireLogin,
+  showMiniCart,
+} from 'features/Cart/cartSlice';
 import AddToCartForm from 'features/Product/components/AddToCartForm';
 import ProductAdditional from 'features/Product/components/ProductAdditional';
 import ProductCardDemo from 'features/Product/components/ProductCardDemo';
@@ -21,7 +25,7 @@ import ProductThumbnail from 'features/Product/components/ProductThumbnail';
 import ProductSkeleton from 'features/Product/components/skeletonLoading/ProductSkeleton';
 import useProductDetail from 'features/Product/hooks/useProductDetail';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, Route, Routes, useParams } from 'react-router-dom';
 import { addItemToCartStorage } from 'utils';
 import styles from './DetailPage.module.scss';
@@ -34,9 +38,16 @@ function DetailPage(props) {
   const categoryId = product?.category?.id;
   const categoryName = product?.category?.name;
 
+  const loggedInUser = useSelector((state) => state.user.current);
+  const isLoggedIn = Boolean(loggedInUser.id);
   const dispatch = useDispatch();
 
   const handleAddToCartSubmit = ({ quantity }) => {
+    if (!isLoggedIn) {
+      dispatch(setRequireLogin());
+      return;
+    }
+
     const newCartItem = {
       id: product.id,
       product,

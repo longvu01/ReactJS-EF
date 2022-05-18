@@ -8,7 +8,7 @@ ListPage.propTypes = {};
 
 function ListPage(props) {
   // Data from API
-  const todoList = [
+  const todoListDump = [
     {
       id: 1,
       title: 'Eat',
@@ -16,11 +16,16 @@ function ListPage(props) {
     },
     {
       id: 2,
+      title: 'Learn',
+      status: 'new',
+    },
+    {
+      id: 3,
       title: 'Code',
       status: 'completed',
     },
     {
-      id: 3,
+      id: 4,
       title: 'Sleep',
       status: 'new',
     },
@@ -30,44 +35,47 @@ function ListPage(props) {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [todoState, setTodoList] = useState(todoList);
-  const [filterState, setFilterState] = useState(() => {
+  const [todoList, setTodoList] = useState(todoListDump);
+  const [filterStatus, setFilterStatus] = useState(() => {
     const params = queryString.parse(location.search);
     return params.status || 'all';
   });
 
   useEffect(() => {
     const params = queryString.parse(location.search);
-    setFilterState(params.status || 'all');
+    setFilterStatus(params.status || 'all');
   }, [location.search]);
 
-  const handlerShowAllClick = () => {
-    const queryParams = { status: 'all' };
-    setSearchParams(queryParams);
-  };
-
-  const handlerShowCompleted = () => {
-    const queryParams = { status: 'completed' };
-    setSearchParams(queryParams);
-  };
-
-  const handlerShowNewClick = () => {
-    const queryParams = { status: 'new' };
-    setSearchParams(queryParams);
-  };
-
-  const renderedTodoList = todoState.filter(
-    (todo) => filterState === 'all' || todo.status === filterState
+  const renderedTodoList = todoList.filter(
+    (todo) => filterStatus === 'all' || todo.status === filterStatus
   );
 
+  // Handlers
+  const handleChangeStatus = (status) => {
+    const queryParams = { status };
+    setSearchParams(queryParams);
+  };
+
+  const handleTodoClick = (index) => {
+    const newTodoList = [...todoList];
+
+    newTodoList[index] = {
+      ...newTodoList[index],
+      status: newTodoList[index].status === 'new' ? 'completed' : 'new',
+    };
+
+    setTodoList(newTodoList);
+  };
+
   const handleTodoFormSubmit = (values) => {
-    console.log(values);
     const newTodo = {
-      id: todoList.length + 1,
+      id: new Date().toISOString(),
       title: values.title,
       status: 'new',
     };
-    const newTodoList = [...todoList, newTodo];
+
+    const newTodoList = [newTodo, ...todoList];
+
     setTodoList(newTodoList);
   };
 
@@ -77,11 +85,13 @@ function ListPage(props) {
       <TodoForm onSubmit={handleTodoFormSubmit} />
 
       <h3>Todo List</h3>
-      <TodoList todoList={renderedTodoList} />
+      <TodoList todoList={renderedTodoList} onTodoClick={handleTodoClick} />
       <div>
-        <button onClick={handlerShowAllClick}>Show all</button>
-        <button onClick={handlerShowCompleted}>Show completed</button>
-        <button onClick={handlerShowNewClick}>Show new</button>
+        <button onClick={handleChangeStatus.bind(null, 'all')}>Show all</button>
+        <button onClick={handleChangeStatus.bind(null, 'completed')}>
+          Show completed
+        </button>
+        <button onClick={handleChangeStatus.bind(null, 'new')}>Show new</button>
       </div>
     </div>
   );

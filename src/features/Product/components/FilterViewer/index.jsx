@@ -141,7 +141,7 @@ function FilterViewer({ filters = {}, onChange = null, categoryActive = '' }) {
             onChange?.({}, true);
           }}
           onDelete={() => {
-            // Just for display delete icon
+            onChange?.({}, true);
           }}
           deleteIcon={<ClearIcon />}
         />

@@ -12,7 +12,7 @@ InputField.propTypes = {
 };
 
 function InputField(props) {
-  const { form, name, label, disabled } = props;
+  const { form, name, label, disabled, multiline } = props;
   return (
     <Controller
       name={name}
@@ -25,6 +25,8 @@ function InputField(props) {
           margin="normal"
           variant="outlined"
           fullWidth
+          multiline={multiline}
+          rows={4}
           //
           label={label}
           disabled={disabled}

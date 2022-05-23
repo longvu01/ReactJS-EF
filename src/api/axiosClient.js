@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { STATIC_HOST } from 'constants';
 
 const axiosClient = axios.create({
-  baseURL: 'https://api.ezfrontend.com/',
+  baseURL: `${STATIC_HOST}/`,
   headers: {
     'Content-Type': 'application/json',
   },

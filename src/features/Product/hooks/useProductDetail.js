@@ -20,7 +20,6 @@ function useProductDetail(productId) {
         if (mounted.current) setProduct(result);
       } catch (error) {
         if (mounted.current) {
-          console.log('error', error);
           setError(error);
           enqueueSnackbar(error.message, { variant: 'error' });
           console.log('Failed to fetch product', error);

@@ -1,49 +1,19 @@
-import AodIcon from '@mui/icons-material/Aod';
-import FaceRetouchingNaturalIcon from '@mui/icons-material/FaceRetouchingNatural';
-import LaptopMacIcon from '@mui/icons-material/LaptopMac';
-import MasksIcon from '@mui/icons-material/Masks';
-import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
-import WomanIcon from '@mui/icons-material/Woman';
-import { Typography } from '@mui/material';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import { styled } from '@mui/material/styles';
-import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
-import UseInput from 'hooks/useInput';
+import { CircularProgress, Stack, TextField } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
+import categoryApi from 'api/categoryApi';
 import queryString from 'query-string';
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-
-const HtmlTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: '#f5f5f9',
-    color: 'rgba(0, 0, 0, 0.87)',
-    width: '100%',
-    fontSize: theme.typography.pxToRem(12),
-    border: '1px solid #dadde9',
-    transform: 'translateX(-25px) !important',
-  },
-}));
-
-const SEARCH_TERMS = [
-  { name: 'ao so mi nu', icon: <WomanIcon /> },
-  { name: 'khau trang', icon: <MasksIcon /> },
-  { name: 'lam dep', icon: <FaceRetouchingNaturalIcon /> },
-  { name: 'macbook', icon: <LaptopMacIcon /> },
-  { name: 'o cung ssd', icon: <AodIcon /> },
-  { name: 'iphone', icon: <PhoneIphoneIcon /> },
-];
 
 function FormSearch() {
   const navigate = useNavigate();
   const location = useLocation();
+
   const [searchParams, setSearchParams] = useSearchParams();
+  const [options, setOptions] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const form = useForm({
     defaultValues: {
@@ -51,45 +21,99 @@ function FormSearch() {
     },
   });
 
-  const handleSearchSubmit = (values) => {
-    if (!values.search.trim()) return;
+  useEffect(() => {
+    const fetchDataCategories = async () => {
+      try {
+        const list = await categoryApi.getAll();
+        const listCategoryMap = list.map((category) => ({
+          name: category.searchTerm,
+        }));
+        setOptions(listCategoryMap);
+      } catch (error) {
+        console.log(error);
+      }
+
+      setLoading(false);
+    };
+
+    fetchDataCategories();
+  }, []);
+
+  const navigateToListPage = (categoryName) => {
+    if (!categoryName) return;
 
     if (location.pathname !== '/products') {
-      navigate('products', { state: { searchTerm: values } });
+      navigate('products', { state: { searchTerm: categoryName } });
     } else {
       const filters = {
         ...queryString.parse(location.search),
-        'category.searchTerm': values.search,
+        'category.searchTerm': categoryName,
       };
       setSearchParams(queryString.stringify(filters));
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      // Prevent's default 'Enter' behavior.
+      // e.defaultMuiPrevented = true;
+
+      navigateToListPage(searchValue);
+    }
+  };
+
+  const handleSearchSubmit = (e, value) => {
+    const categoryName = value?.name;
+
+    navigateToListPage(categoryName);
+  };
+
   return (
-    <HtmlTooltip
-      title={
-        <>
-          <Typography color="inherit">Only used for: </Typography>
-          <List>
-            {SEARCH_TERMS.map((item) => (
-              <ListItem disablePadding key={item.name}>
-                <ListItemButton
-                  onClick={() => handleSearchSubmit({ search: item.name })}
-                >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.name} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </>
-      }
-    >
-      <form onSubmit={form.handleSubmit(handleSearchSubmit)}>
-        <UseInput form={form} name="search" />
-      </form>
-    </HtmlTooltip>
+    <form onSubmit={form.handleSubmit(handleSearchSubmit)}>
+      <Stack spacing={2} sx={{ width: 300 }}>
+        <Autocomplete
+          sx={{
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'rgba(0, 0, 0, 0.2) !important',
+            },
+            '& .MuiOutlinedInput-root': {
+              padding: '6px',
+            },
+          }}
+          id="search-categories"
+          options={options}
+          loading={loading}
+          isOptionEqualToValue={(option, value) => option.name === value.name}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Search something..."
+              variant="outlined"
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <>
+                    {loading ? (
+                      <CircularProgress color="inherit" size={20} />
+                    ) : null}
+                    {params.InputProps.endAdornment}
+                  </>
+                ),
+              }}
+            />
+          )}
+          getOptionLabel={(option) => `${option.name}`}
+          noOptionsText="No options found!"
+          inputValue={searchValue}
+          onInputChange={(_, newSearchValue) => {
+            setSearchValue(newSearchValue);
+          }}
+          onChange={handleSearchSubmit}
+          onKeyDown={handleKeyDown}
+          blurOnSelect
+        />
+      </Stack>
+    </form>
   );
 }
-
 export default FormSearch;

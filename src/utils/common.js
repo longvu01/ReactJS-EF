@@ -7,10 +7,14 @@ const formatCurrency = (price) => {
   }).format(price);
 };
 
+const formatDate = (date) => {
+  return new Intl.DateTimeFormat('vi-VN').format(date);
+};
+
 const getPlaceholderThumbnailUrl = (categoryId) => {
   if (!categoryId || !THUMBNAIL_PLACEHOLDER[categoryId])
     return 'https://via.placeholder.com/444';
   return THUMBNAIL_PLACEHOLDER[categoryId];
 };
 
-export { formatCurrency, getPlaceholderThumbnailUrl };
+export { formatCurrency, formatDate, getPlaceholderThumbnailUrl };

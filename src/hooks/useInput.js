@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { useInput } from '@mui/base';
 import { styled } from '@mui/system';
+import * as React from 'react';
 import { Controller } from 'react-hook-form';
 
 const blue = {
@@ -57,6 +57,7 @@ const CustomInput = React.forwardRef(function CustomInput(props, ref) {
 });
 
 function UseInput(props) {
+  console.log(props);
   const { form, name } = props;
   return (
     <Controller

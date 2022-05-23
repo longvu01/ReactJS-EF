@@ -1,0 +1,11 @@
+.star {
+  color: #faaf00;
+}
+
+.progressBar {
+  background-color: rgba(233, 36, 36, 0.3) !important;
+
+  & span {
+    background-color: rgb(233, 12, 12) !important;
+  }
+}

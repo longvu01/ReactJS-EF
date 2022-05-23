@@ -58,7 +58,7 @@ function RegisterForm({ onSubmit }) {
 
   const { isSubmitting } = form.formState;
 
-  const handleTodoSubmit = async (values) => {
+  const handleRegisterSubmit = async (values) => {
     if (onSubmit) await onSubmit(values);
   };
 
@@ -74,7 +74,7 @@ function RegisterForm({ onSubmit }) {
         Create An Account
       </Typography>
 
-      <form onSubmit={form.handleSubmit(handleTodoSubmit)}>
+      <form onSubmit={form.handleSubmit(handleRegisterSubmit)}>
         <InputField form={form} name="fullName" label="Full Name" />
         <InputField form={form} name="email" label="Email" />
         <PasswordField form={form} name="password" label="Password" />

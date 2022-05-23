@@ -45,8 +45,7 @@ function ListPage(props) {
 
   const queryParams = useMemo(() => {
     const paramsParse = queryString.parse(location.search);
-    const categorySearchTerm = location.state?.searchTerm?.search;
-
+    const categorySearchTerm = location.state?.searchTerm;
     const params = {
       ...paramsParse,
       _page: +paramsParse._page || initFilters._page,
@@ -55,7 +54,7 @@ function ListPage(props) {
       isPromotion: paramsParse.isPromotion === 'true',
       isFreeShip: paramsParse.isFreeShip === 'true',
       ...(categorySearchTerm && {
-        ['category.searchTerm']: categorySearchTerm,
+        'category.searchTerm': categorySearchTerm,
       }),
     };
 
@@ -69,9 +68,9 @@ function ListPage(props) {
 
   // Set search params if search from another page
   useEffect(() => {
-    const categorySearchTerm = location.state?.searchTerm?.search;
+    const categorySearchTerm = location.state?.searchTerm;
     if (categorySearchTerm) {
-      setSearchParams({ ['category.searchTerm']: categorySearchTerm });
+      setSearchParams({ 'category.searchTerm': categorySearchTerm });
     }
   }, []);
 

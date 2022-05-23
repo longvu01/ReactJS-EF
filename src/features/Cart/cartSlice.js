@@ -76,9 +76,7 @@ const cartSlice = createSlice({
     },
 
     removeCartItemsActive(state) {
-      state.cartItems = state.cartItems.filter(
-        (item) => item.isActive !== true
-      );
+      state.cartItems = state.cartItems.filter((item) => !item.isActive);
     },
 
     purchaseCartItem(state) {

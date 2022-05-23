@@ -6,6 +6,7 @@ import oCung from 'imgs/o-cung.jpg';
 import iphone from 'imgs/iphone.jpg';
 
 export const STATIC_HOST = 'https://api.ezfrontend.com';
+export const REVIEW_URL = 'https://ez-shop-llv-default-rtdb.firebaseio.com';
 // export const THUMBNAIL_PLACEHOLDER = 'https://via.placeholder.com/444';
 export const THUMBNAIL_PLACEHOLDER = {
   1: aoSoMiNu,

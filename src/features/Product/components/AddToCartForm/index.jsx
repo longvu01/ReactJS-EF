@@ -44,7 +44,7 @@ function AddToCartForm({ onSubmit = null }) {
         size="normal"
         sx={{ width: 250 }}
       >
-        Add to cart
+        Thêm vào giỏ
       </Button>
     </form>
   );

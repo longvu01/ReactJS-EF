@@ -119,7 +119,9 @@ function DetailPage(props) {
               </Grid>
             </Paper>
 
+            {/* Menu links */}
             <ProductMenu />
+
             {/* Routes */}
             <Routes>
               <Route index element={<ProductDescription product={product} />} />

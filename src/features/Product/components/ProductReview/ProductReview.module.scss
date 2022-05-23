@@ -1,0 +1,29 @@
+.root {
+  padding: 24px;
+}
+
+.overView {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  margin-top: 8px;
+
+  & .reviewQty {
+    font-weight: bold;
+  }
+}
+
+.left {
+  width: 300px;
+  padding: 12px;
+  border-right: 1px solid #ccc;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column !important;
+}
+
+.right {
+  flex: 1 1 0;
+  padding: 16px;
+}

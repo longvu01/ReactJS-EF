@@ -3,17 +3,28 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import classNames from 'classnames/bind';
+import { useNavigate } from 'react-router-dom';
 import styles from './Sidebar.module.scss';
 
 const cx = classNames.bind(styles);
 
-function Sidebar({ data }) {
+function Sidebar({ categories }) {
+  const navigate = useNavigate();
+
+  const handleNavigate = (id) => {
+    navigate(`/products?category.id=${id}`);
+  };
+
   return (
     <div className={cx('wrapper')}>
       <nav aria-label="sidebar">
         <List>
-          {data.map((item, index) => (
-            <ListItem disablePadding key={index}>
+          {categories.map((item) => (
+            <ListItem
+              disablePadding
+              key={item.id}
+              onClick={() => handleNavigate(item.id)}
+            >
               <ListItemButton>
                 <ListItemText primary={item.name} />
               </ListItemButton>

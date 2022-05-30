@@ -1,19 +1,37 @@
-import productApi from 'api/productApi';
-import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick/lib/slider';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
 import SlickItem from '../SlickItem';
+import styles from './SlickList.module.scss';
+
+function CustomArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        display: 'block',
+        background: '#1976d2',
+        borderRadius: '50%',
+        height: '19px',
+      }}
+      onClick={onClick}
+    />
+  );
+}
 
 const settings = {
-  dots: true,
   infinite: true,
   speed: 500,
-  slidesToShow: 4,
-  slidesToScroll: 4,
+  slidesToShow: 5,
+  slidesToScroll: 3,
   autoplay: true,
-  autoplaySpeed: 2000,
+  autoplaySpeed: 3000,
   cssEase: 'linear',
+  nextArrow: <CustomArrow />,
+  prevArrow: <CustomArrow />,
   responsive: [
     {
       breakpoint: 1024,
@@ -43,25 +61,19 @@ const settings = {
 };
 
 function SlickList({ category }) {
-  const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchDataCategories = async () => {
-      const { data } = await productApi.getAll({
-        _page: 0,
-        'category.id': category.id,
-      });
-      setProducts(data);
-    };
-
-    fetchDataCategories();
-  }, [category.id]);
+  const handleNavigate = (id) => {
+    navigate(`./products?category.id=${id}`);
+  };
 
   return (
-    <div style={{ maxWidth: '100vw', minHeight: '350px' }}>
-      <h2>{category.name}</h2>
+    <div className={styles.root}>
+      <h3 className={styles.title} onClick={() => handleNavigate(category.id)}>
+        {category.name}
+      </h3>
       <Slider {...settings}>
-        {products.map((product) => (
+        {category.products.map((product) => (
           <SlickItem key={product.id} product={product} />
         ))}
       </Slider>

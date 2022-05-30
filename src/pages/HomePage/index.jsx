@@ -2,24 +2,32 @@ import { Box, Container, Grid } from '@mui/material';
 import categoryApi from 'api/categoryApi';
 import classNames from 'classnames/bind';
 import Sidebar from 'components/Layouts/Sidebar';
+import SidebarSkeleton from 'components/Layouts/SidebarSkeleton';
 import SlickList from 'components/Layouts/SlickList';
-import { useEffect, useState } from 'react';
+import SlickListSkeleton from 'components/Layouts/SlickListSkeleton';
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styles from './HomePage.module.scss';
+import { setCategories } from './productSlice';
 const cx = classNames.bind(styles);
 
 function HomePage(props) {
   const [loadingCate, setLoadingCate] = useState(true);
-  const [categoryList, setCategoryList] = useState([]);
 
-  // Fetch data
-  useEffect(() => {
-    // Categories
-    const fetchDataCategories = async () => {
+  const dispatch = useDispatch();
+  const categories = useSelector((state) => state.products.categories);
+
+  const fetchDataCategories = useCallback(() => {
+    const fetch = async () => {
       try {
         const list = await categoryApi.getAll();
-        const listCategoryMap = list.map(({ id, name }) => ({ id, name }));
+        const listCategoryMap = list.map(({ id, name, products }) => ({
+          id,
+          name,
+          products,
+        }));
 
-        setCategoryList(listCategoryMap);
+        dispatch(setCategories(listCategoryMap));
       } catch (error) {
         console.log('Failed to fetch category list: ', error);
       }
@@ -27,24 +35,51 @@ function HomePage(props) {
       setLoadingCate(false);
     };
 
-    fetchDataCategories();
-  }, []);
+    fetch();
+  }, [dispatch]);
+
+  // Fetch data
+  useEffect(() => {
+    if (categories.length === 0) fetchDataCategories();
+    else setLoadingCate(false);
+  }, [categories, fetchDataCategories]);
 
   return (
-    <Box>
+    <Box className={cx('root')}>
       <Container maxWidth="lg">
         <Grid container spacing={1}>
           <Grid item>
             <div className={cx('side-bar')}>
-              <Sidebar data={categoryList} />
+              {loadingCate ? (
+                <SidebarSkeleton length={6} />
+              ) : (
+                <Sidebar categories={categories} />
+              )}
+            </div>
+          </Grid>
+          <Grid item className={cx('bannerBox')}>
+            <div className={cx('banner')}>
+              <h2>Banner</h2>
             </div>
           </Grid>
         </Grid>
 
         <Grid container className={cx('content')}>
-          {categoryList.map((category) => (
-            <SlickList key={category.id} category={category} />
-          ))}
+          {loadingCate ? (
+            <>
+              <SlickListSkeleton length={5} />
+              <SlickListSkeleton length={5} />
+              <SlickListSkeleton length={5} />
+              <SlickListSkeleton length={5} />
+              <SlickListSkeleton length={5} />
+            </>
+          ) : (
+            <>
+              {categories.map((category) => (
+                <SlickList key={category.id} category={category} />
+              ))}
+            </>
+          )}
         </Grid>
       </Container>
     </Box>

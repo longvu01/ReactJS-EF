@@ -88,7 +88,10 @@ function DetailPage(props) {
                 aria-label="breadcrumb"
                 className={styles.breadcrumb}
               >
-                <Button onClick={() => navigate('/')}>
+                <Button
+                  sx={{ display: 'flex', alignItems: 'center' }}
+                  onClick={() => navigate('/')}
+                >
                   <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
                   Trang chủ
                 </Button>

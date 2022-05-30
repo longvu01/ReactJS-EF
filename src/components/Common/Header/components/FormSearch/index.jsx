@@ -10,6 +10,7 @@ function FormSearch() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // eslint-disable-next-line no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   const [options, setOptions] = useState([]);
   const [searchValue, setSearchValue] = useState('');
@@ -57,6 +58,8 @@ function FormSearch() {
     if (e.key === 'Enter') {
       // Prevent's default 'Enter' behavior.
       // e.defaultMuiPrevented = true;
+      console.log(e.target.value);
+      console.log({ searchValue });
 
       navigateToListPage(searchValue);
     }

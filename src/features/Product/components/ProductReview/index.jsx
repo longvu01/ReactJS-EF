@@ -13,16 +13,17 @@ import {
 } from '@mui/material';
 import ProgressRating from 'components/Common/ProgressRating';
 import { setRequireLogin, unSetRequireLogin } from 'features/Cart/cartSlice';
+import { getAllReviews, resetReviewList } from 'features/Review/reviewSlice';
 import { useSnackbar } from 'notistack';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import ReviewDataService from 'services/review';
 import Review from '../../../Review';
 import styles from './ProductReview.module.scss';
 import ReviewList from './ReviewList';
 
 function ProductReview({ product }) {
-  const [reviews, setReviews] = useState([]);
+  const reviewList = useSelector((state) => state.reviews.reviewList);
+
   const [ratingValues, setRatingValues] = useState({});
   const loggedInUser = useSelector((state) => state.user.current);
   const currentUserId = loggedInUser?.id;
@@ -33,38 +34,37 @@ function ProductReview({ product }) {
 
   const fetchDataReviews = useCallback(async () => {
     try {
-      const querySnapshot = await ReviewDataService.getAll(product.id);
-      const dataReviews = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setReviews(dataReviews);
+      await dispatch(getAllReviews(product.id));
     } catch (error) {
       console.log('Failed to fetch reviews', error);
     }
-  }, [product.id]);
+  }, [dispatch, product.id]);
 
   useEffect(() => {
     fetchDataReviews();
-  }, [fetchDataReviews]);
 
-  const totalReviews = reviews.length;
+    return () => {
+      dispatch(resetReviewList());
+    };
+  }, [fetchDataReviews, dispatch]);
 
-  const ratingTotal =
-    reviews.reduce((total, cur) => total + cur.rating, 0) / reviews.length;
+  const totalReviews = reviewList.length;
+
+  const ratingTotal = +(
+    reviewList.reduce((total, cur) => total + cur.rating, 0) / reviewList.length
+  ).toFixed(2);
 
   useEffect(() => {
     const ratings = {};
 
-    reviews.forEach((review) => {
+    reviewList.forEach((review) => {
       ratings[review.rating] = ratings[review.rating]
         ? ++ratings[review.rating]
         : 1;
     });
 
     setRatingValues(ratings);
-  }, [reviews]);
+  }, [reviewList]);
 
   // Dialog
   const handleClickOpenDialog = () => {
@@ -198,7 +198,7 @@ function ProductReview({ product }) {
         </DialogActions>
       </Dialog>
 
-      <ReviewList reviews={reviews} onFetchReviews={fetchDataReviews} />
+      <ReviewList reviews={reviewList} />
     </Paper>
   );
 }

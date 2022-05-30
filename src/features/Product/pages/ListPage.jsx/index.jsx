@@ -41,11 +41,13 @@ function ListPage(props) {
   const [categoryList, setCategoryList] = useState([]);
   const [pagination, setPagination] = useState(initPagination);
 
+  // eslint-disable-next-line no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
 
   const queryParams = useMemo(() => {
     const paramsParse = queryString.parse(location.search);
-    const categorySearchTerm = location.state?.searchTerm;
+    const categorySearchTerm = location.state?.searchTerm?.search;
+
     const params = {
       ...paramsParse,
       _page: +paramsParse._page || initFilters._page,
@@ -61,6 +63,7 @@ function ListPage(props) {
     if (!paramsParse['category.searchTerm'])
       delete params['category.searchTerm'];
     return params;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]);
 
   const countPagination = Math.ceil(pagination.total / pagination.limit);
@@ -68,10 +71,11 @@ function ListPage(props) {
 
   // Set search params if search from another page
   useEffect(() => {
-    const categorySearchTerm = location.state?.searchTerm;
+    const categorySearchTerm = location.state?.searchTerm?.search;
     if (categorySearchTerm) {
       setSearchParams({ 'category.searchTerm': categorySearchTerm });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Fetch data

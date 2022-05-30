@@ -29,7 +29,6 @@ import {
   unSetRequireLogin,
 } from 'features/Cart/cartSlice';
 import { cartItemsCountSelector } from 'features/Cart/selectors';
-import EZLogo from 'imgs/EZ-logo.png';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -142,12 +141,6 @@ function Header() {
           <CodeIcon style={{ padding: 4 }} />
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <Link className={styles.link} to="/">
-              <img
-                src={EZLogo}
-                alt={EZLogo}
-                width={15}
-                style={{ paddingRight: 2 }}
-              />
               EZ SHOP
             </Link>
           </Typography>

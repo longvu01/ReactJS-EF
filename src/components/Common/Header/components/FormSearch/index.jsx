@@ -88,7 +88,8 @@ function FormSearch() {
             <TextField
               {...params}
               label="Search something..."
-              variant="outlined"
+              variant="filled"
+              color="warning"
               InputProps={{
                 ...params.InputProps,
                 endAdornment: (

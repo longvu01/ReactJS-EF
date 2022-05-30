@@ -2,13 +2,15 @@ import ReviewForm from 'features/Review/components/ReviewForm';
 import { useSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 import * as React from 'react';
-import ReviewDataService from 'services/review';
+import { useDispatch } from 'react-redux';
+import { addReview } from './reviewSlice';
 
 Review.propTypes = {
   closeDialog: PropTypes.func,
 };
 function Review({ closeDialog, productId, userId }) {
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (values) => {
     try {
@@ -16,7 +18,7 @@ function Review({ closeDialog, productId, userId }) {
       values.productId = productId;
       values.userId = userId;
 
-      await ReviewDataService.add(values);
+      await dispatch(addReview(values)).unwrap();
 
       closeDialog?.();
 

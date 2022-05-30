@@ -2,6 +2,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import {
   Box,
   Breadcrumbs,
+  Button,
   Container,
   Grid,
   Paper,
@@ -26,7 +27,7 @@ import ProductSkeleton from 'features/Product/components/skeletonLoading/Product
 import useProductDetail from 'features/Product/hooks/useProductDetail';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, Route, Routes, useParams } from 'react-router-dom';
+import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import { addItemToCartStorage } from 'utils';
 import styles from './DetailPage.module.scss';
 
@@ -34,6 +35,7 @@ function DetailPage(props) {
   const [errorFetch, setErrorFetch] = useState(null);
 
   const { productId } = useParams();
+  const navigate = useNavigate();
   const { product, loading, error } = useProductDetail(productId);
   const categoryId = product?.category?.id;
   const categoryName = product?.category?.name;
@@ -86,17 +88,19 @@ function DetailPage(props) {
                 aria-label="breadcrumb"
                 className={styles.breadcrumb}
               >
-                <Link to="/">
+                <Button onClick={() => navigate('/')}>
                   <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
                   Trang chủ
-                </Link>
+                </Button>
 
-                <Link to="..">Danh mục</Link>
+                <Button onClick={() => navigate('..')}>Danh mục</Button>
 
                 {categoryId && categoryName && (
-                  <Link to={`../?category.id=${categoryId}`}>
+                  <Button
+                    onClick={() => navigate(`../?category.id=${categoryId}`)}
+                  >
                     {categoryName}
-                  </Link>
+                  </Button>
                 )}
 
                 <Typography color="text.primary">{product.name}</Typography>

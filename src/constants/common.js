@@ -1,9 +1,9 @@
 import aoSoMiNu from 'imgs/ao-so-mi-nu.jpg';
-import khauTrang from 'imgs/khau-trang.jpg';
 import boLamDep from 'imgs/bo-lam-dep.jpg';
+import iphone from 'imgs/iphone.jpg';
+import khauTrang from 'imgs/khau-trang.jpg';
 import macBook from 'imgs/mac-book.jpg';
 import oCung from 'imgs/o-cung.jpg';
-import iphone from 'imgs/iphone.jpg';
 
 export const STATIC_HOST = 'https://api.ezfrontend.com';
 export const REVIEW_URL = 'https://ez-shop-llv-default-rtdb.firebaseio.com';

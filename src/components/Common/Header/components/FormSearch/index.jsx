@@ -1,10 +1,19 @@
-import { CircularProgress, Stack, TextField } from '@mui/material';
+import {
+  CircularProgress,
+  InputAdornment,
+  Stack,
+  TextField,
+} from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
+import { styled } from '@mui/system';
 import categoryApi from 'api/categoryApi';
 import queryString from 'query-string';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import styles from './FormSearch.module.scss';
+
+const CustomTexField = styled(TextField)``;
 
 function FormSearch() {
   const navigate = useNavigate();
@@ -72,7 +81,10 @@ function FormSearch() {
   };
 
   return (
-    <form onSubmit={form.handleSubmit(handleSearchSubmit)}>
+    <form
+      className={styles.wrapper}
+      onSubmit={form.handleSubmit(handleSearchSubmit)}
+    >
       <Stack spacing={2} sx={{ width: 300 }}>
         <Autocomplete
           sx={{
@@ -88,7 +100,7 @@ function FormSearch() {
           loading={loading}
           isOptionEqualToValue={(option, value) => option.name === value.name}
           renderInput={(params) => (
-            <TextField
+            <CustomTexField
               {...params}
               label="Search something..."
               variant="filled"
@@ -98,7 +110,13 @@ function FormSearch() {
                 endAdornment: (
                   <>
                     {loading ? (
-                      <CircularProgress color="inherit" size={20} />
+                      <InputAdornment position="start">
+                        <CircularProgress
+                          color="inherit"
+                          size={20}
+                          sx={{ marginBottom: 4 }}
+                        />
+                      </InputAdornment>
                     ) : null}
                     {params.InputProps.endAdornment}
                   </>

@@ -5,10 +5,13 @@ import Sidebar from 'components/Layouts/Sidebar';
 import SidebarSkeleton from 'components/Layouts/SidebarSkeleton';
 import SlickList from 'components/Layouts/SlickList';
 import SlickListSkeleton from 'components/Layouts/SlickListSkeleton';
+import { BANNERS } from 'constants';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './HomePage.module.scss';
 import { setCategories } from './productSlice';
+import banner1 from 'imgs/banner1.jpg';
+
 const cx = classNames.bind(styles);
 
 function HomePage(props) {
@@ -47,7 +50,7 @@ function HomePage(props) {
   return (
     <Box className={cx('root')}>
       <Container maxWidth="lg">
-        <Grid container spacing={1}>
+        <Grid container spacing={1} sx={{ flexWrap: 'nowrap' }}>
           <Grid item>
             <div className={cx('side-bar')}>
               {loadingCate ? (
@@ -59,7 +62,7 @@ function HomePage(props) {
           </Grid>
           <Grid item className={cx('bannerBox')}>
             <div className={cx('banner')}>
-              <h2>Banner</h2>
+              <img src={banner1} alt="banner1" />
             </div>
           </Grid>
         </Grid>

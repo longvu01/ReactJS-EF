@@ -71,7 +71,7 @@ function ListPage(props) {
 
   // Set search params if search from another page
   useEffect(() => {
-    const categorySearchTerm = location.state?.searchTerm?.search;
+    const categorySearchTerm = location.state?.searchTerm;
     if (categorySearchTerm) {
       setSearchParams({ 'category.searchTerm': categorySearchTerm });
     }

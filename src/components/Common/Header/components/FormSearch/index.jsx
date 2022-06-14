@@ -67,8 +67,6 @@ function FormSearch() {
     if (e.key === 'Enter') {
       // Prevent's default 'Enter' behavior.
       // e.defaultMuiPrevented = true;
-      console.log(e.target.value);
-      console.log({ searchValue });
 
       navigateToListPage(searchValue);
     }

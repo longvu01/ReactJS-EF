@@ -5,12 +5,11 @@ import Sidebar from 'components/Layouts/Sidebar';
 import SidebarSkeleton from 'components/Layouts/SidebarSkeleton';
 import SlickList from 'components/Layouts/SlickList';
 import SlickListSkeleton from 'components/Layouts/SlickListSkeleton';
-import { BANNERS } from 'constants';
+import banner1 from 'imgs/banner1.jpg';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './HomePage.module.scss';
 import { setCategories } from './productSlice';
-import banner1 from 'imgs/banner1.jpg';
 
 const cx = classNames.bind(styles);
 

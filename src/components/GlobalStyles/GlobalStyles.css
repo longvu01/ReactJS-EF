@@ -38,14 +38,12 @@ code {
   background-color: #fff !important;
   padding: 12px 24px 8px !important;
   box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px;
-  /* padding: 0 !important; */
 }
 
 .MuiTooltip-arrow {
   color: #fff !important;
 }
 
-// Scrollbar CSS
 html *::-webkit-scrollbar {
   border-radius: 0;
   width: 8px;

@@ -10,11 +10,8 @@ import {
 } from '@mui/material';
 import LinearProgressLoading from 'components/Common/LinearProgressLoading';
 import NotFound from 'components/Common/NotFound';
-import {
-  addToCart,
-  setRequireLogin,
-  showMiniCart,
-} from 'features/Cart/cartSlice';
+import { setRequireLogin } from 'features/Auth/userSlice';
+import { addToCart, showMiniCart } from 'features/Cart/cartSlice';
 import AddToCartForm from 'features/Product/components/AddToCartForm';
 import ProductAdditional from 'features/Product/components/ProductAdditional';
 import ProductCardDemo from 'features/Product/components/ProductCardDemo';
@@ -25,17 +22,15 @@ import ProductReview from 'features/Product/components/ProductReview';
 import ProductThumbnail from 'features/Product/components/ProductThumbnail';
 import ProductSkeleton from 'features/Product/components/skeletonLoading/ProductSkeleton';
 import useProductDetail from 'features/Product/hooks/useProductDetail';
-import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import { addItemToCartStorage } from 'utils';
 import styles from './DetailPage.module.scss';
 
 function DetailPage(props) {
-  const [errorFetch, setErrorFetch] = useState(null);
-
   const { productId } = useParams();
   const navigate = useNavigate();
+
   const { product, loading, error } = useProductDetail(productId);
   const categoryId = product?.category?.id;
   const categoryName = product?.category?.name;
@@ -51,7 +46,7 @@ function DetailPage(props) {
     }
 
     const newCartItem = {
-      id: product.id,
+      id: +productId,
       product,
       quantity,
       isActive: false,
@@ -64,16 +59,10 @@ function DetailPage(props) {
     addItemToCartStorage(newCartItem);
   };
 
-  useEffect(() => {
-    setErrorFetch(error);
-  }, [error]);
-
-  if (errorFetch) {
-    return <NotFound />;
-  }
+  if (error) return <NotFound />;
 
   return (
-    <>
+    <Box>
       {loading ? (
         <>
           <LinearProgressLoading />
@@ -131,7 +120,12 @@ function DetailPage(props) {
 
             {/* Routes */}
             <Routes>
-              <Route index element={<ProductDescription product={product} />} />
+              <Route
+                index
+                element={
+                  <ProductDescription description={product.description} />
+                }
+              />
               <Route
                 path="additional"
                 element={<ProductAdditional product={product} />}
@@ -144,7 +138,7 @@ function DetailPage(props) {
           </Container>
         </Box>
       )}
-    </>
+    </Box>
   );
 }
 

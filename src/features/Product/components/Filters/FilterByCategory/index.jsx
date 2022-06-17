@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
 import styles from './FilterByCategory.module.scss';
 
 FilterByCategory.propTypes = {

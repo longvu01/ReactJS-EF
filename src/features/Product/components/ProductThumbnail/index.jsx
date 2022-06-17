@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import { Carousel } from '@trendyol-js/react-carousel';
 import { STATIC_HOST } from 'constants';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ReactImageMagnify from 'react-image-magnify';
 import { getPlaceholderThumbnailUrl } from 'utils';
 import styles from './ProductThumbnail.module.scss';

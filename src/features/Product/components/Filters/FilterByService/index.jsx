@@ -33,7 +33,9 @@ function FilterByService({ filters, onChange }) {
 
   return (
     <Box className={styles.root}>
-      <Typography variant="subtitle2">DỊCH VỤ</Typography>
+      <Typography variant="subtitle2" sx={{ marginBottom: 1 }}>
+        DỊCH VỤ
+      </Typography>
 
       <ul className={styles.list}>
         {initService.map((service) => (
@@ -41,7 +43,7 @@ function FilterByService({ filters, onChange }) {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={Boolean(filters[service.value])}
+                  checked={filters[service.value] === true}
                   color="primary"
                   onChange={handleChange}
                   name={service.value}

@@ -1,10 +1,7 @@
-import RefreshIcon from '@mui/icons-material/Refresh';
-import { Box, Button } from '@mui/material';
-import { useSnackbar } from 'notistack';
-import React, { useEffect, useState } from 'react';
+import { Box } from '@mui/material';
 import ReviewItem from '../ReviewItem';
 
-function ReviewList({ reviews, onFetchReviews }) {
+function ReviewList({ reviews = [] }) {
   if (reviews.length === 0) {
     return (
       <Box sx={{ textAlign: 'center' }}>

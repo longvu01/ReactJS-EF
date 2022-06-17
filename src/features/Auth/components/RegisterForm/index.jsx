@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 import InputField from 'components/form-controls/InputField';
 import PasswordField from 'components/form-controls/PasswordField';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import styles from './RegisterForm.module.scss';
@@ -92,6 +91,7 @@ function RegisterForm({ onSubmit }) {
           color="primary"
           fullWidth
           size="large"
+          sx={{ marginTop: '12px' }}
         >
           Create an account
         </Button>

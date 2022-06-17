@@ -25,12 +25,10 @@ function Register({ closeDialog }) {
       // Show notistack
       enqueueSnackbar('Register successfully!', {
         variant: 'success',
-        persist: false,
       });
     } catch (error) {
       enqueueSnackbar(error.message, {
         variant: 'error',
-        persist: false,
       });
     }
   };

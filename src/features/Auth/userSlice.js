@@ -25,17 +25,27 @@ const login = createAsyncThunk('user/login', async (payload) => {
 const initialState = {
   current: JSON.parse(localStorage.getItem(StorageKeys.USER)) || {},
   settings: {},
+  isRequireLogin: false,
 };
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    setRequireLogin(state) {
+      state.isRequireLogin = true;
+    },
+
+    unSetRequireLogin(state) {
+      state.isRequireLogin = false;
+    },
+
     logout(state) {
       // clear local storage
       localStorage.removeItem(StorageKeys.USER);
       localStorage.removeItem(StorageKeys.TOKEN);
 
+      // reset redux user
       state.current = {};
     },
   },
@@ -52,7 +62,7 @@ const userSlice = createSlice({
 
 const { actions, reducer } = userSlice;
 // Sync actions
-export const { logout } = actions;
+export const { setRequireLogin, unSetRequireLogin, logout } = actions;
 // Async actions
 export { register, login };
 // Reducer

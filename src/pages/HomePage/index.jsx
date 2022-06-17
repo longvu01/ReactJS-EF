@@ -6,21 +6,21 @@ import SidebarSkeleton from 'components/Layouts/SidebarSkeleton';
 import SlickList from 'components/Layouts/SlickList';
 import SlickListSkeleton from 'components/Layouts/SlickListSkeleton';
 import banner1 from 'imgs/banner1.jpg';
-import { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
 import styles from './HomePage.module.scss';
-import { setCategories } from './productSlice';
 
 const cx = classNames.bind(styles);
 
 function HomePage(props) {
   const [loadingCate, setLoadingCate] = useState(true);
+  const [categories, setCategories] = useState([]);
 
-  const dispatch = useDispatch();
-  const categories = useSelector((state) => state.products.categories);
+  const { enqueueSnackbar } = useSnackbar();
 
-  const fetchDataCategories = useCallback(() => {
-    const fetch = async () => {
+  // Fetch data
+  useEffect(() => {
+    (async () => {
       try {
         const list = await categoryApi.getAll();
         const listCategoryMap = list.map(({ id, name, products }) => ({
@@ -29,22 +29,16 @@ function HomePage(props) {
           products,
         }));
 
-        dispatch(setCategories(listCategoryMap));
+        setCategories(listCategoryMap);
       } catch (error) {
-        console.log('Failed to fetch category list: ', error);
+        enqueueSnackbar(`Failed to fetch data: ${error}`, {
+          variant: 'error',
+        });
       }
 
       setLoadingCate(false);
-    };
-
-    fetch();
-  }, [dispatch]);
-
-  // Fetch data
-  useEffect(() => {
-    if (categories.length === 0) fetchDataCategories();
-    else setLoadingCate(false);
-  }, [categories, fetchDataCategories]);
+    })();
+  }, [enqueueSnackbar]);
 
   return (
     <Box className={cx('root')}>

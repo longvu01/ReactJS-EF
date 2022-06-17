@@ -1,6 +1,5 @@
 import TextField from '@mui/material/TextField';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { Controller } from 'react-hook-form';
 
 InputField.propTypes = {
@@ -13,6 +12,7 @@ InputField.propTypes = {
 
 function InputField(props) {
   const { form, name, label, disabled, multiline } = props;
+
   return (
     <Controller
       name={name}

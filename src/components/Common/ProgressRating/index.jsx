@@ -1,7 +1,7 @@
+import StarIcon from '@mui/icons-material/Star';
+import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import StarIcon from '@mui/icons-material/Star';
 import styles from './ProgressRating.module.scss';
 
 function ProgressRating({ starNumber, value, total }) {

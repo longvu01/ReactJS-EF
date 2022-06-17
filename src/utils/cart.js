@@ -6,9 +6,10 @@ const getExistingCartStorage = () => {
   return JSON.parse(localStorage.getItem(`user-cart-${userStorage.id}`));
 };
 
-const saveCartToStorage = (cartItems) => {
-  const userStorage = JSON.parse(localStorage.getItem('user'));
+let cartData = getExistingCartStorage() || [];
+const userStorage = JSON.parse(localStorage.getItem('user'));
 
+const saveCartToStorage = (cartItems) => {
   if (!userStorage) return;
 
   localStorage.setItem(
@@ -18,27 +19,17 @@ const saveCartToStorage = (cartItems) => {
 };
 
 const addItemToCartStorage = (cartItems) => {
-  let cartData = getExistingCartStorage();
-
-  if (!cartData) {
-    /* Init cart with empty array */
-    saveCartToStorage([]);
-    cartData = getExistingCartStorage();
-  }
-
   const index = cartData.findIndex((item) => item.id === cartItems.id);
   if (index >= 0) {
     cartData[index].quantity += cartItems.quantity;
   } else {
-    cartData.push(cartItems);
+    cartData.unshift(cartItems);
   }
 
   saveCartToStorage(cartData);
 };
 
-const setQuantityCartItem = (id, quantity) => {
-  let cartData = getExistingCartStorage();
-
+const setQuantityCartItemStorage = (id, quantity) => {
   if (!cartData) return;
 
   const index = cartData.findIndex((item) => item.id === id);
@@ -49,8 +40,6 @@ const setQuantityCartItem = (id, quantity) => {
 };
 
 const setCartItemStorageActive = (id, isActive) => {
-  let cartData = getExistingCartStorage();
-
   if (!cartData) return;
 
   const index = cartData.findIndex((item) => item.id === id);
@@ -61,8 +50,6 @@ const setCartItemStorageActive = (id, isActive) => {
 };
 
 const setAllCartItemStorageActive = (isActive) => {
-  let cartData = getExistingCartStorage();
-
   if (!cartData) return;
 
   cartData.forEach((item) => {
@@ -73,8 +60,6 @@ const setAllCartItemStorageActive = (isActive) => {
 };
 
 const removeFromCartStorage = (id) => {
-  let cartData = getExistingCartStorage();
-
   if (!cartData) return;
 
   cartData = cartData.filter((item) => item.id !== id);
@@ -83,8 +68,6 @@ const removeFromCartStorage = (id) => {
 };
 
 const removeCartItemStorageActive = (id) => {
-  let cartData = getExistingCartStorage();
-
   if (!cartData) return;
 
   cartData = cartData.filter((item) => item.isActive !== true);
@@ -92,9 +75,7 @@ const removeCartItemStorageActive = (id) => {
   saveCartToStorage(cartData);
 };
 
-const purchaseCartItems = () => {
-  let cartData = getExistingCartStorage();
-
+const purchaseCartStorage = (id) => {
   if (!cartData) return;
 
   const purchaseCart = cartData
@@ -103,9 +84,10 @@ const purchaseCartItems = () => {
       id: item.id,
       quantity: item.quantity,
     }));
+
   cartData = cartData.filter((item) => !item.isActive);
 
-  console.log('purchaseCart localStorage', purchaseCart);
+  console.log('purchaseCart localStorage', { userId: id, purchaseCart });
   saveCartToStorage(cartData);
 };
 
@@ -113,10 +95,10 @@ export {
   getExistingCartStorage,
   saveCartToStorage,
   addItemToCartStorage,
-  setQuantityCartItem,
+  setQuantityCartItemStorage,
   setCartItemStorageActive,
   setAllCartItemStorageActive,
   removeFromCartStorage,
   removeCartItemStorageActive,
-  purchaseCartItems,
+  purchaseCartStorage,
 };

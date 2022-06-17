@@ -1,6 +1,5 @@
 import { Tab, Tabs } from '@mui/material';
 import PropTypes from 'prop-types';
-import React from 'react';
 
 ProductSort.propTypes = {
   currentSort: PropTypes.string.isRequired,
@@ -18,9 +17,11 @@ function ProductSort({ currentSort, onChange }) {
       centered
       onChange={handleSortChange}
       textColor="primary"
+      aria-label="sort price"
     >
       <Tab label="Giá thấp tới cao" value="salePrice:ASC"></Tab>
       <Tab label="Giá cao xuống thấp" value="salePrice:DESC"></Tab>
+      <Tab label="Hàng mới" value="updated_at:DESC"></Tab>
     </Tabs>
   );
 }

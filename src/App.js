@@ -6,7 +6,6 @@ import Counter from 'features/Counter';
 import ProductFeature from 'features/Product';
 import HomePage from 'pages/HomePage';
 import MainPage from 'pages/MainPage';
-import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import TodoFeature from './features/Todo/';
 

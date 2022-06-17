@@ -16,18 +16,18 @@ import classNames from 'classnames';
 import { STATIC_HOST } from 'constants';
 import shoppingCart from 'imgs/tk-shopping-img.png';
 import { useSnackbar } from 'notistack';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   formatCurrency,
   getPlaceholderThumbnailUrl,
-  purchaseCartItems,
+  purchaseCartStorage,
   removeCartItemStorageActive,
   removeFromCartStorage,
   setAllCartItemStorageActive,
   setCartItemStorageActive,
-  setQuantityCartItem,
+  setQuantityCartItemStorage,
 } from 'utils';
 import styles from './Cart.module.scss';
 import {
@@ -41,8 +41,8 @@ import {
 import UpdateQuantityForm from './components';
 import DialogDelete from './components/DialogDelete';
 import {
+  activeCartItemsSelector,
   cartItemsCountSelector,
-  cartTotalActiveSelector,
   cartTotalPriceSelector,
   cartTotalPromotionSelector,
   cartTotalProvisionalSelector,
@@ -51,8 +51,8 @@ import {
 function CartFeature(props) {
   const navigate = useNavigate();
 
-  const [deleteAll, setDeleteAll] = useState(false);
-  const [showDialogItem, setShowDialogItem] = useState(false);
+  const [deleteMore, setDeleteMore] = useState(false);
+  const [showDialogDelete, setShowDialogDelete] = useState(false);
   const [showBackDrop, setOpenBackDrop] = useState(false);
   const idRemove = useRef(null);
 
@@ -60,19 +60,21 @@ function CartFeature(props) {
 
   /* Redux state */
   const dispatch = useDispatch();
+  const loggedInUser = useSelector((state) => state.user.current);
+
   const cartTotalPrice = useSelector(cartTotalPriceSelector);
   const cartTotalPromotion = useSelector(cartTotalPromotionSelector);
   const cartTotalProvisional = useSelector(cartTotalProvisionalSelector);
-  const cartTotalActive = useSelector(cartTotalActiveSelector);
+  const cartTotalActive = useSelector(activeCartItemsSelector).length;
   const cartCount = useSelector(cartItemsCountSelector);
   const cartItems = useSelector((state) => state.cart.cartItems);
-  const CartItemCount = cartItems.length;
+  const cartItemCount = cartItems.length;
 
   /* Func get thumbnail for cart item */
   const getThumbnailUrl = (product) => {
     return product.thumbnail?.url
       ? `${STATIC_HOST}${product.thumbnail.url}`
-      : getPlaceholderThumbnailUrl(product.category?.id);
+      : getPlaceholderThumbnailUrl(product.category);
   };
 
   /* Handlers */
@@ -85,19 +87,19 @@ function CartFeature(props) {
   };
 
   const handleChangeOpen = (isOpen = false) => {
-    setShowDialogItem(isOpen);
+    setShowDialogDelete(isOpen);
   };
 
   /* Cart */
   const handleSetQuantity = (id, quantity, isRemove = false) => {
     if (isRemove) {
-      setShowDialogItem(true);
+      setShowDialogDelete(true);
       idRemove.current = id;
     } else {
       dispatch(setQuantity({ id, quantity }));
 
       const item = cartItems.find((item) => item.id === id);
-      if (item) setQuantityCartItem(id, quantity);
+      if (item) setQuantityCartItemStorage(id, quantity);
     }
   };
 
@@ -112,19 +114,21 @@ function CartFeature(props) {
   };
 
   const handleButtonDeleteClick = (id) => {
-    setShowDialogItem(true);
+    setShowDialogDelete(true);
     idRemove.current = id;
   };
 
   const handleButtonDeleteAllClick = () => {
-    if (cartTotalActive > 0) {
-      setShowDialogItem(true);
-      setDeleteAll(true);
-    } else {
+    if (cartTotalActive <= 0) {
       enqueueSnackbar('Bạn chưa chọn sản phẩm để xóa', {
         variant: 'info',
-        autoHideDuration: 3000,
       });
+    } else if (cartTotalActive === 1) {
+      setDeleteMore(false);
+      setShowDialogDelete(true);
+    } else {
+      setDeleteMore(true);
+      setShowDialogDelete(true);
     }
   };
 
@@ -136,7 +140,7 @@ function CartFeature(props) {
   };
 
   const handleAllCartItemActive = () => {
-    if (cartTotalActive < CartItemCount) {
+    if (cartTotalActive < cartItemCount) {
       dispatch(changeActiveAllCartItem(true));
       setAllCartItemStorageActive(true);
     } else {
@@ -152,18 +156,20 @@ function CartFeature(props) {
       /* Fake await api call */
       setTimeout(() => {
         setOpenBackDrop(false);
+        // Remove from redux
         dispatch(purchaseCartItem());
         console.log('purchaseCart (call API...)');
-        purchaseCartItems();
+        // Remove from localStorage
+        purchaseCartStorage(loggedInUser.id);
+        // Call Api
+
         enqueueSnackbar('Bạn đã đặt mua sản phẩm thành công', {
           variant: 'success',
-          autoHideDuration: 3000,
         });
       }, 2000);
     } else {
       enqueueSnackbar('Bạn cần chọn sản phẩm trước', {
         variant: 'info',
-        autoHideDuration: 3000,
       });
     }
   };
@@ -174,7 +180,7 @@ function CartFeature(props) {
         <Typography variant="h5" component="h1" className={styles.cartTitle}>
           GIỎ HÀNG
         </Typography>
-        {CartItemCount ? (
+        {cartItemCount > 0 ? (
           <Grid container spacing={1}>
             {/* Left side */}
             <Grid item className={styles.left}>
@@ -182,7 +188,7 @@ function CartFeature(props) {
                 <FormGroup>
                   <FormControlLabel
                     checked={
-                      cartTotalActive === CartItemCount && CartItemCount > 0
+                      cartTotalActive === cartItemCount && cartItemCount > 0
                     }
                     control={<Checkbox onChange={handleAllCartItemActive} />}
                     label={`Tất cả (${cartCount} sản phẩm)`}
@@ -224,7 +230,7 @@ function CartFeature(props) {
               </Paper>
 
               <Grid container className={styles.cartList}>
-                {[...cartItems].reverse().map((item) => (
+                {[...cartItems].map((item) => (
                   <Paper
                     key={item.id}
                     elevation={0}
@@ -312,10 +318,10 @@ function CartFeature(props) {
 
             {/* Dialog Delete */}
             <DialogDelete
-              showDialog={showDialogItem}
+              showDialog={showDialogDelete}
               onChangeOpen={handleChangeOpen}
               onDelete={handleDeleteCartItem}
-              isDeleteAll={deleteAll}
+              isDeleteMore={deleteMore}
             />
 
             {/* Right side */}
@@ -409,7 +415,7 @@ function CartFeature(props) {
                 onClick={handlePurchaseCart}
                 className={styles.buttonPurchase}
                 fullWidth
-              >{`Mua hàng (${cartTotalActive})`}</Button>
+              >{`Tiến hành đặt hàng (${cartTotalActive})`}</Button>
             </Grid>
           </Grid>
         ) : (

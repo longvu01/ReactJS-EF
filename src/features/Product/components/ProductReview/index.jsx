@@ -12,33 +12,40 @@ import {
   Typography,
 } from '@mui/material';
 import ProgressRating from 'components/Common/ProgressRating';
-import { setRequireLogin, unSetRequireLogin } from 'features/Cart/cartSlice';
+import { setRequireLogin, unSetRequireLogin } from 'features/Auth/userSlice';
 import { getAllReviews, resetReviewList } from 'features/Review/reviewSlice';
 import { useSnackbar } from 'notistack';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Review from '../../../Review';
 import styles from './ProductReview.module.scss';
 import ReviewList from './ReviewList';
 
 function ProductReview({ product }) {
-  const reviewList = useSelector((state) => state.reviews.reviewList);
-
   const [ratingValues, setRatingValues] = useState({});
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const reviewList = useSelector((state) => state.reviews.reviewList);
   const loggedInUser = useSelector((state) => state.user.current);
   const currentUserId = loggedInUser?.id;
 
-  const { enqueueSnackbar } = useSnackbar();
-  const [openDialog, setOpenDialog] = useState(false);
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const totalReviews = reviewList.length;
+  const ratingTotal = +(
+    reviewList.reduce((total, cur) => total + cur.rating, 0) / reviewList.length
+  ).toFixed(2);
 
   const fetchDataReviews = useCallback(async () => {
     try {
-      await dispatch(getAllReviews(product.id));
+      await dispatch(getAllReviews({ id: product.id, limit: 10 }));
     } catch (error) {
-      console.log('Failed to fetch reviews', error);
+      enqueueSnackbar(`Failed to fetch reviews list: ${error}`, {
+        variant: 'error',
+      });
     }
-  }, [dispatch, product.id]);
+  }, [dispatch, enqueueSnackbar, product.id]);
 
   useEffect(() => {
     fetchDataReviews();
@@ -47,12 +54,6 @@ function ProductReview({ product }) {
       dispatch(resetReviewList());
     };
   }, [fetchDataReviews, dispatch]);
-
-  const totalReviews = reviewList.length;
-
-  const ratingTotal = +(
-    reviewList.reduce((total, cur) => total + cur.rating, 0) / reviewList.length
-  ).toFixed(2);
 
   useEffect(() => {
     const ratings = {};
@@ -70,9 +71,9 @@ function ProductReview({ product }) {
   const handleClickOpenDialog = () => {
     if (!currentUserId) {
       dispatch(setRequireLogin());
+
       enqueueSnackbar('Bạn cần đăng nhập trước khi đánh giá!', {
         variant: 'info',
-        persist: false,
       });
       return;
     }

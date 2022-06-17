@@ -1,22 +1,37 @@
 import { db } from '../firebase-config';
 
 import {
-  collection,
-  getDocs,
-  getDoc,
   addDoc,
-  updateDoc,
+  collection,
   deleteDoc,
   doc,
-  query,
-  where,
-  orderBy,
+  getDoc,
+  getDocs,
   limit,
+  orderBy,
+  query,
+  updateDoc,
+  where,
 } from 'firebase/firestore';
 
 const reviewCollectionRef = collection(db, 'reviews');
 
 class ReviewDataService {
+  getAll = ({ id, limit: limitQty }) => {
+    const q = query(
+      reviewCollectionRef,
+      where('productId', '==', id),
+      orderBy('releaseDate', 'desc'),
+      limit(limitQty)
+    );
+    return getDocs(q);
+  };
+
+  get = (id) => {
+    const reviewDoc = doc(db, 'reviews', id);
+    return getDoc(reviewDoc);
+  };
+
   add = (newReview) => {
     return addDoc(reviewCollectionRef, newReview);
   };
@@ -29,21 +44,6 @@ class ReviewDataService {
   delete = (id) => {
     const reviewDoc = doc(db, 'reviews', id);
     return deleteDoc(reviewDoc);
-  };
-
-  getAll = (id) => {
-    const q = query(
-      reviewCollectionRef,
-      where('productId', '==', id),
-      orderBy('releaseDate', 'desc'),
-      limit(10)
-    );
-    return getDocs(q);
-  };
-
-  get = (id) => {
-    const reviewDoc = doc(db, 'reviews', id);
-    return getDoc(reviewDoc);
   };
 }
 

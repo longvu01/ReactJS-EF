@@ -4,7 +4,7 @@ import { TextField } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 PasswordField.propTypes = {
@@ -20,7 +20,7 @@ function PasswordField(props) {
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => {
-    setShowPassword((x) => !x);
+    setShowPassword((show) => !show);
   };
 
   return (

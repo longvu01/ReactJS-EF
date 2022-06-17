@@ -7,7 +7,7 @@ const productApi = {
     newParams._start =
       !params._page || params._page <= 1
         ? 0
-        : (params._page - 1) * (params._limit || 50);
+        : (params._page - 1) * (params._limit || 20);
 
     // Remove un-needed key
     delete newParams._page;

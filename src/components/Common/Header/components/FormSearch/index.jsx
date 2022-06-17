@@ -102,7 +102,11 @@ function FormSearch() {
               {...params}
               label="Search something..."
               variant="filled"
-              color="warning"
+              InputLabelProps={{
+                style: {
+                  color: '#fff',
+                },
+              }}
               InputProps={{
                 ...params.InputProps,
                 endAdornment: (

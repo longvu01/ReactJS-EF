@@ -18,14 +18,16 @@ function FilterByPrice({ filters, onChange, onReset }) {
   const { salePrice_gte, salePrice_lte } = filters;
 
   const [values, setValues] = useState(() => {
-    if (salePrice_gte && salePrice_lte) return filters;
+    if (salePrice_gte && salePrice_lte) return { salePrice_gte, salePrice_lte };
     return initValues;
   });
+
   const { enqueueSnackbar } = useSnackbar();
 
+  // if filters change
   useEffect(() => {
     if (salePrice_gte && salePrice_lte) {
-      setValues(filters);
+      setValues({ salePrice_gte, salePrice_lte });
     } else {
       setValues(initValues);
     }
@@ -64,7 +66,9 @@ function FilterByPrice({ filters, onChange, onReset }) {
 
   return (
     <Box className={styles.root}>
-      <Typography variant="subtitle2">CHỌN KHOẢNG GIÁ</Typography>
+      <Typography variant="subtitle2" sx={{ paddingBottom: 1 }}>
+        CHỌN KHOẢNG GIÁ
+      </Typography>
 
       <Box className={styles.range}>
         <TextField

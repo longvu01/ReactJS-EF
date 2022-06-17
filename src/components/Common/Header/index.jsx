@@ -20,13 +20,12 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Login from 'features/Auth/components/Login';
 import Register from 'features/Auth/components/Register';
-import { logout } from 'features/Auth/userSlice';
+import { logout, unSetRequireLogin } from 'features/Auth/userSlice';
 import {
   getExistingCart,
   hideMiniCart,
   resetCart,
   showMiniCart,
-  unSetRequireLogin,
 } from 'features/Cart/cartSlice';
 import { cartItemsCountSelector } from 'features/Cart/selectors';
 import { useEffect, useRef, useState } from 'react';
@@ -50,7 +49,7 @@ function Header() {
   const loggedInUser = useSelector((state) => state.user.current);
   const isLoggedIn = Boolean(loggedInUser.id);
   const cartItemsCount = useSelector(cartItemsCountSelector);
-  const isRequireLogin = useSelector((state) => state.cart.isRequireLogin);
+  const isRequireLogin = useSelector((state) => state.user.isRequireLogin);
   const openTooltip = useSelector((state) => state.cart.isShowMiniCart);
   const dispatch = useDispatch();
 
@@ -86,7 +85,7 @@ function Header() {
   // Menu
   const openMenu = Boolean(anchorEl);
 
-  const handleUserClick = (e) => {
+  const handleUserIconClick = (e) => {
     setAnchorEl(e.currentTarget);
   };
 
@@ -161,10 +160,57 @@ function Header() {
           )}
 
           {isLoggedIn && (
-            <IconButton color="inherit" onClick={handleUserClick}>
+            <IconButton color="inherit" onClick={handleUserIconClick}>
               <AccountCircle />
             </IconButton>
           )}
+
+          {/* Dialog login/ register */}
+          <Dialog
+            className={styles.dialogRoot}
+            disableEscapeKeyDown
+            open={openDialog}
+            onClose={handleCloseDialog}
+          >
+            <IconButton
+              className={styles.closeButton}
+              onClick={handleCloseDialog}
+            >
+              <Close />
+            </IconButton>
+
+            <DialogContent>
+              {mode === MODE.REGISTER && (
+                <Box>
+                  <Register closeDialog={handleCloseDialog} />
+
+                  <Box textAlign="center">
+                    <Button color="primary" onClick={() => setMode(MODE.LOGIN)}>
+                      Already have an account? Login here
+                    </Button>
+                  </Box>
+                </Box>
+              )}
+              {mode === MODE.LOGIN && (
+                <Box>
+                  <Login closeDialog={handleCloseDialog} />
+
+                  <Box textAlign="center">
+                    <Button
+                      color="primary"
+                      onClick={() => setMode(MODE.REGISTER)}
+                    >
+                      Don't have an account? Register here
+                    </Button>
+                  </Box>
+                </Box>
+              )}
+            </DialogContent>
+
+            <DialogActions>
+              <Button onClick={handleCloseDialog}>Cancel</Button>
+            </DialogActions>
+          </Dialog>
 
           {/* Cart tooltip */}
           <Tooltip
@@ -211,7 +257,7 @@ function Header() {
         </Toolbar>
       </AppBar>
 
-      {/* User menu when logged in */}
+      {/* User menu when click to account icon */}
       <Menu
         className={styles.userMenu}
         anchorEl={anchorEl}
@@ -235,45 +281,6 @@ function Header() {
         <MenuItem onClick={handleCloseMenu}>My account</MenuItem>
         <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
       </Menu>
-
-      {/* Dialog login/ register */}
-      <Dialog
-        className={styles.dialogRoot}
-        disableEscapeKeyDown
-        open={openDialog}
-        onClose={handleCloseDialog}
-      >
-        <IconButton className={styles.closeButton} onClick={handleCloseDialog}>
-          <Close />
-        </IconButton>
-
-        <DialogContent>
-          {mode === MODE.REGISTER && (
-            <Box>
-              <Register closeDialog={handleCloseDialog} />
-              <Box textAlign="center">
-                <Button color="primary" onClick={() => setMode(MODE.LOGIN)}>
-                  Already have an account? Login here
-                </Button>
-              </Box>
-            </Box>
-          )}
-          {mode === MODE.LOGIN && (
-            <Box>
-              <Login closeDialog={handleCloseDialog} />
-              <Box textAlign="center">
-                <Button color="primary" onClick={() => setMode(MODE.REGISTER)}>
-                  Don't have an account? Register here
-                </Button>
-              </Box>
-            </Box>
-          )}
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }

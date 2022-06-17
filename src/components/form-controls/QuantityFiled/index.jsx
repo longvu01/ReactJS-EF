@@ -1,7 +1,6 @@
 import { AddCircleOutline, RemoveCircleOutline } from '@mui/icons-material';
 import { Box, IconButton, TextField } from '@mui/material';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { Controller } from 'react-hook-form';
 import styles from './QuantityFiled.module.scss';
 
@@ -15,7 +14,7 @@ QuantityFiled.propTypes = {
 
 function QuantityFiled(props) {
   const { form, name, label, disabled } = props;
-  const { setValue } = form;
+  // const { setValue } = form;
 
   return (
     <Controller
@@ -27,7 +26,10 @@ function QuantityFiled(props) {
       }) => (
         <Box className={styles.box}>
           <IconButton
-            onClick={() => setValue(name, +value - 1)}
+            onClick={() => {
+              onChange({ target: { name, value: +value - 1 } });
+              // setValue(name, +value - 1);
+            }}
             className={styles.qtyButton}
           >
             <RemoveCircleOutline />
@@ -53,7 +55,10 @@ function QuantityFiled(props) {
           />
 
           <IconButton
-            onClick={() => setValue(name, +value + 1)}
+            onClick={() => {
+              onChange({ target: { name, value: +value + 1 } });
+              // setValue(name, +value + 1);
+            }}
             className={styles.qtyButton}
           >
             <AddCircleOutline />

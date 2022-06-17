@@ -2,9 +2,15 @@ import { ShoppingCart } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
 import { Box, IconButton, Rating, Typography } from '@mui/material';
 import { STATIC_HOST } from 'constants';
-import React from 'react';
+import { setRequireLogin } from 'features/Auth/userSlice';
+import { addToCart, showMiniCart } from 'features/Cart/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { formatCurrency, getPlaceholderThumbnailUrl } from 'utils';
+import {
+  addItemToCartStorage,
+  formatCurrency,
+  getPlaceholderThumbnailUrl,
+} from 'utils';
 import styles from './SlickItem.module.scss';
 
 const fakeRating = () => Math.ceil(Math.random() * 2) + 3;
@@ -24,10 +30,33 @@ function SlickItem({ product }) {
     ? `${STATIC_HOST}${thumbnail?.url}`
     : getPlaceholderThumbnailUrl(categoryId);
 
+  const loggedInUser = useSelector((state) => state.user.current);
+  const isLoggedIn = Boolean(loggedInUser.id);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate(`/products/${id}`);
+    navigate(`products/${id}`);
+  };
+
+  const handleAddToCart = () => {
+    if (!isLoggedIn) {
+      dispatch(setRequireLogin());
+      return;
+    }
+
+    const newCartItem = {
+      id,
+      product,
+      quantity: 1,
+      isActive: false,
+    };
+
+    dispatch(showMiniCart());
+    dispatch(addToCart(newCartItem));
+
+    /* Add cart item */
+    addItemToCartStorage(newCartItem);
   };
 
   return (
@@ -79,7 +108,12 @@ function SlickItem({ product }) {
         <Typography className={styles.status} variant="p">
           <CheckIcon /> Còn hàng
         </Typography>
-        <IconButton size="large" aria-label="add to cart" color="inherit">
+        <IconButton
+          size="large"
+          aria-label="add to cart"
+          color="inherit"
+          onClick={handleAddToCart}
+        >
           <ShoppingCart />
         </IconButton>
       </Box>

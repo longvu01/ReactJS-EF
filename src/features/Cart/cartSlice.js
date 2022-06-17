@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   isShowMiniCart: false,
-  isRequireLogin: false,
   cartItems: [],
 };
 
@@ -18,14 +17,6 @@ const cartSlice = createSlice({
       state.isShowMiniCart = false;
     },
 
-    setRequireLogin(state) {
-      state.isRequireLogin = true;
-    },
-
-    unSetRequireLogin(state) {
-      state.isRequireLogin = false;
-    },
-
     getExistingCart(state, action) {
       const existingCart = { ...state };
       existingCart.cartItems = action.payload;
@@ -35,13 +26,12 @@ const cartSlice = createSlice({
     addToCart(state, action) {
       // newItem = {id, product, quantity, isActive}
       const newItem = action.payload;
-
       const index = state.cartItems.findIndex((item) => item.id === newItem.id);
 
       if (index >= 0) {
         state.cartItems[index].quantity += newItem.quantity;
       } else {
-        state.cartItems.push(newItem);
+        state.cartItems.unshift(newItem);
       }
     },
 
@@ -94,8 +84,6 @@ const { actions, reducer } = cartSlice;
 export const {
   showMiniCart,
   hideMiniCart,
-  setRequireLogin,
-  unSetRequireLogin,
   getExistingCart,
   addToCart,
   setQuantity,

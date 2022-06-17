@@ -10,8 +10,9 @@ import ProductSort from 'features/Product/components/ProductSort';
 import FilterSkeletonList from 'features/Product/components/skeletonLoading/FilterSkeletonList';
 import PaginationSkeleton from 'features/Product/components/skeletonLoading/PaginationSkeleton';
 import ProductSkeletonList from 'features/Product/components/skeletonLoading/ProductSkeletonList';
+import { useSnackbar } from 'notistack';
 import queryString from 'query-string';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import styles from './ListPage.module.scss';
 
@@ -30,7 +31,7 @@ const initPagination = {
 function ListPage(props) {
   const location = useLocation();
 
-  // const mounted = useRef(true);
+  const { enqueueSnackbar } = useSnackbar();
 
   const [categoryActive, setCategoryActive] = useState('');
 
@@ -46,15 +47,21 @@ function ListPage(props) {
 
   const queryParams = useMemo(() => {
     const paramsParse = queryString.parse(location.search);
-    const categorySearchTerm = location.state?.searchTerm?.search;
+    const categorySearchTerm = location.state?.searchTerm;
 
     const params = {
       ...paramsParse,
       _page: +paramsParse._page || initFilters._page,
       _limit: +paramsParse._limit || initFilters._limit,
       _sort: paramsParse._sort || initFilters._sort,
-      isPromotion: paramsParse.isPromotion === 'true',
-      isFreeShip: paramsParse.isFreeShip === 'true',
+      // isPromotion: paramsParse.isPromotion === 'true',
+      // isFreeShip: paramsParse.isFreeShip === 'true',
+      ...(paramsParse.isPromotion === 'true' && {
+        isPromotion: true,
+      }),
+      ...(paramsParse.isFreeShip === 'true' && {
+        isFreeShip: true,
+      }),
       ...(categorySearchTerm && {
         'category.searchTerm': categorySearchTerm,
       }),
@@ -63,8 +70,7 @@ function ListPage(props) {
     if (!paramsParse['category.searchTerm'])
       delete params['category.searchTerm'];
     return params;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search]);
+  }, [location.search, location.state?.searchTerm]);
 
   const countPagination = Math.ceil(pagination.total / pagination.limit);
   const currentPage = pagination.page;
@@ -73,10 +79,11 @@ function ListPage(props) {
   useEffect(() => {
     const categorySearchTerm = location.state?.searchTerm;
     if (categorySearchTerm) {
-      setSearchParams({ 'category.searchTerm': categorySearchTerm });
+      setSearchParams({
+        'category.searchTerm': categorySearchTerm,
+      });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [location.state?.searchTerm, setSearchParams]);
 
   // Fetch data
   useEffect(() => {
@@ -84,15 +91,15 @@ function ListPage(props) {
     const fetchDataProductsAndPagination = async () => {
       try {
         const { data, pagination } = await productApi.getAll(queryParams);
-        // if (mounted.current) {
+
         setProductList(data);
         setPagination(pagination);
-        // }
       } catch (error) {
-        console.log('Failed to fetch product list: ', error);
+        enqueueSnackbar(`Failed to fetch product list: ${error}`, {
+          variant: 'error',
+        });
       }
-      //
-      // if (mounted.current) setLoadingList(false);
+
       setLoadingList(false);
     };
 
@@ -101,7 +108,7 @@ function ListPage(props) {
       try {
         const list = await categoryApi.getAll();
         const listCategoryMap = list.map(({ id, name }) => ({ id, name }));
-        // if (mounted.current) setCategoryList(listCategoryMap);
+
         setCategoryList(listCategoryMap);
 
         const categoryActiveId = queryParams['category.id'];
@@ -109,25 +116,21 @@ function ListPage(props) {
           const categoryActive = listCategoryMap.find(
             (item) => item.id === +categoryActiveId
           );
-          // if (mounted.current) setCategoryActive(categoryActive.name);
+
           setCategoryActive(categoryActive.name);
         }
       } catch (error) {
-        console.log('Failed to fetch category list: ', error);
+        enqueueSnackbar(`Failed to fetch category list: ${error}`, {
+          variant: 'error',
+        });
       }
 
-      // if (mounted.current) setLoadingCate(false);
       setLoadingCate(false);
     };
 
-    //
     fetchDataProductsAndPagination();
     fetchDataCategories();
-
-    // return () => {
-
-    // };
-  }, [queryParams]);
+  }, [queryParams, enqueueSnackbar]);
 
   // Handlers
   const handlePageChange = (e, page) => {
@@ -135,6 +138,7 @@ function ListPage(props) {
       ...queryParams,
       _page: page,
     };
+
     setSearchParams(queryString.stringify(filters));
   };
 
@@ -144,6 +148,7 @@ function ListPage(props) {
       _sort: newSortValue,
       _page: 1,
     };
+
     setSearchParams(queryString.stringify(filters));
   };
 
@@ -182,6 +187,11 @@ function ListPage(props) {
       setCategoryActive(categoryActive.name);
     }
 
+    // delete unneeded filters
+    Object.entries(filters).forEach(([key, val]) => {
+      if (!val) delete filters[key];
+    });
+
     setSearchParams(queryString.stringify(filters));
   };
 
@@ -207,7 +217,7 @@ function ListPage(props) {
     <Box>
       {(loadingCate || loadingList) && <LinearProgressLoading />}
       <Container>
-        <Grid container spacing={1}>
+        <Grid container spacing={1} sx={{ flexWrap: 'nowrap' }}>
           {/* Left side */}
           <Grid item className={classnames(styles.left)}>
             <Paper elevation={0}>

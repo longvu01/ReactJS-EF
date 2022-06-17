@@ -1,7 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { STATIC_HOST } from 'constants';
 import PropTypes from 'prop-types';
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrency, getPlaceholderThumbnailUrl } from 'utils';
 import styles from './ProductItem.module.scss';

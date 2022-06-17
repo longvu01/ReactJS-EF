@@ -64,7 +64,7 @@ function SlickList({ category }) {
   const navigate = useNavigate();
 
   const handleNavigate = (id) => {
-    navigate(`./products?category.id=${id}`);
+    navigate(`products?category.id=${id}`);
   };
 
   return (

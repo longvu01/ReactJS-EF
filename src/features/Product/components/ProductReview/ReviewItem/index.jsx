@@ -1,9 +1,8 @@
 import { Box, Rating } from '@mui/material';
-import React from 'react';
 import { formatDate } from 'utils';
 import styles from './ReviewItem.module.scss';
 
-function ReviewItem({ review }) {
+function ReviewItem({ review = {} }) {
   const { fullName, rating, reviewContent, releaseDate } = review;
 
   return (

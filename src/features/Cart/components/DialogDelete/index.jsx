@@ -1,25 +1,25 @@
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import styles from './DialogDelete.module.scss';
 
 function DialogDelete({
   showDialog = false,
   onChangeOpen,
   onDelete,
-  isDeleteAll = false,
+  isDeleteMore = false,
 }) {
   const handleCloseDialog = () => {
-    if (onChangeOpen) onChangeOpen(false);
+    onChangeOpen(false);
   };
 
   const handleDelete = () => {
-    if (onDelete) onDelete(isDeleteAll);
-    if (onChangeOpen) onChangeOpen(false);
+    if (onDelete) onDelete(isDeleteMore);
+    onChangeOpen(false);
   };
 
   return (
@@ -35,7 +35,7 @@ function DialogDelete({
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          Bạn có muốn xóa {isDeleteAll && 'các '}sản phẩm đang chọn?
+          Bạn có muốn xóa {isDeleteMore && 'các '}sản phẩm đang chọn?
         </DialogContentText>
       </DialogContent>
       <DialogActions>

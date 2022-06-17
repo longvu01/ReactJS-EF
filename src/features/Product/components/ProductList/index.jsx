@@ -1,6 +1,5 @@
 import { Box, Button, Grid, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
-import React from 'react';
 import ProductItem from '../ProductItem';
 
 ProductList.propTypes = {
@@ -23,9 +22,17 @@ function ProductList({ data, onReset }) {
     <>
       {!isEmpty ? (
         <Box>
-          <Grid container spacing={2}>
+          <Grid container spacing={1}>
             {data.map((product) => (
-              <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
+              <Grid
+                item
+                key={product.id}
+                xs={12}
+                sm={6}
+                md={4}
+                lg={3}
+                sx={{ marginTop: 0.5 }}
+              >
                 <ProductItem product={product} />
               </Grid>
             ))}

@@ -25,6 +25,7 @@ function AddToCartForm({ onSubmit = null }) {
 
   const form = useForm({
     defaultValues,
+    mode: 'onChange',
     resolver: yupResolver(schema),
   });
 

@@ -1,8 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styles from './ProductInfo.module.scss';
 import { Box, Typography } from '@mui/material';
+import PropTypes from 'prop-types';
 import { formatCurrency } from 'utils';
+import styles from './ProductInfo.module.scss';
 
 ProductInfo.propTypes = {
   product: PropTypes.object,

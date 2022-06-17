@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
 import PropTypes from 'prop-types';
-import React from 'react';
 import FilterByCategory from '../Filters/FilterByCategory';
 import FilterByPrice from '../Filters/FilterByPrice';
 import FilterByService from '../Filters/FilterByService';
@@ -24,6 +23,8 @@ function ProductFilters({ filters, categoryList, onChange, onReset }) {
     const newFilters = {
       'category.id': categoryId,
     };
+
+    // true mean category change
     onChange(newFilters, true);
   };
 
@@ -32,6 +33,7 @@ function ProductFilters({ filters, categoryList, onChange, onReset }) {
   };
 
   const handleResetPriceRange = () => {
+    // true mean reset price range
     if (onReset) onReset(true);
   };
 
